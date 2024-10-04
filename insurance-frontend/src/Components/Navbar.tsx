@@ -10,7 +10,11 @@ const Navbar: React.FC = () => {
               <img src={logo} alt='Classin Insurance Agency logo' className='w-64'></img>
           </Link>
           <div>
-            <Link to="/" className="text-gray-300 hover:text-white mx-2">Home</Link>
+            <Link to="/services" className="text-gray-300 hover:text-white mx-2">Services</Link>
+            <Link to="/auto" className="text-gray-300 hover:text-white mx-2">Auto</Link>
+            <Link to="/home" className="text-gray-300 hover:text-white mx-2">Home</Link>
+            <Link to="/life" className="text-gray-300 hover:text-white mx-2">Life</Link>
+            <Link to="/business" className="text-gray-300 hover:text-white mx-2">Business</Link>
             <Link to="/admin" className="text-gray-300 hover:text-white mx-2">Admin</Link>
           </div>
         </div>

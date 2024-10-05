@@ -7,7 +7,8 @@ const LandingPage: React.FC = () => {
       backgroundImage: `url(${bgimage})`,
       backgroundSize: 'cover',       // Ensures the image covers the entire div
       backgroundPosition: 'center',  // Centers the image
-      height: '100vh',               // Full screen height
+      height: '95vh',               // Full screen height
+      top:'100px'
     }} className="relative flex flex-col items-start justify-start text-white">
       <div className="absolute inset-0 bg-black opacity-50"></div>
       

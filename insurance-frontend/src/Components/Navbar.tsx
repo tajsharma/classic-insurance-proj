@@ -4,7 +4,7 @@ import logo from '../Assets/cropped-classic-logo-1-768x117.png';
 
 const Navbar: React.FC = () => {
     return (
-      <nav className="bg-yellow-50 p-6">
+      <nav className="bg-yellow-50 p-6 fixed top-0 z-10 flex w-full ">
         <div className="container mx-auto flex justify-between">
           <Link to="/" className="text-white text-xl">
               <img src={logo} alt='Classic Insurance Agency logo' className='w-80'></img>

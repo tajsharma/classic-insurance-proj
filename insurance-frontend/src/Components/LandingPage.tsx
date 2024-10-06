@@ -30,35 +30,35 @@ const LandingPage: React.FC = () => {
         <h2 className="text-6xl font-bold mb-6 text-center text-orange-400">Our Services</h2>
         <p className="text-xl text-center mb-4 "><i>Explore our wide range of insurance and tag services below!</i></p>
         
-        <div className='flex p-10 gap-10'>
+        <div className='flex p-10 justify-between'>
           {/* insurance cards below here */}
-          <div className='flex-col bg-orange-400 text-white p-5'>
-            <h3 className=''>Auto Insurance</h3>
-            <p>
+          <div className='flex-col bg-orange-400 text-white p-5 rounded-lg w-96 text-center'>
+            <h3 className='py-3 text-3xl font-bold'>Auto Insurance</h3>
+            <p className='text-xl'>
               Get the coverage you need to stay protected on the road, 
               no matter where life takes you.
             </p>
           </div>
 
-          <div className='flex-col bg-orange-400 text-white p-5'>
-            <h3 className=''>Home Insurance</h3>
-            <p>
+          <div className='flex-col bg-orange-400 text-white p-5 rounded-lg w-96 text-center'>
+            <h3 className='py-3 text-3xl font-bold'>Home Insurance</h3>
+            <p className='text-xl'>
               Protect your home and everything in it with comprehensive 
               coverage you can trust.
             </p>
           </div>
 
-          <div className='flex-col bg-orange-400 text-white p-5'>
-            <h3 className=''>Business Insurance</h3>
-            <p>
+          <div className='flex-col bg-orange-400 text-white p-5 rounded-lg w-96 text-center'>
+            <h3 className='py-3 text-3xl font-bold'>Business Insurance</h3>
+            <p className='text-xl'>
               Protect your business from unexpected risks with tailored 
               insurance solutions.
             </p>
           </div>
 
-          <div className='flex-col bg-orange-400 text-white p-5'>
-            <h3 className=''>Life Insurance</h3>
-            <p className=''>
+          <div className='flex-col bg-orange-400 text-white p-5 rounded-lg w-96 text-center'>
+            <h3 className='py-3 text-3xl font-bold'>Life Insurance</h3>
+            <p className='text-xl'>
               Ensure your loved ones are financially secure with a life 
               insurance plan that meets your needs.
             </p>

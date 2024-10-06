@@ -7,10 +7,9 @@ const LandingPage: React.FC = () => {
     <section style={{
       backgroundImage: `url(${bgimage})`,
       backgroundSize: 'cover',       // Ensures the image covers the entire div
-      backgroundPosition: 'center',  // Centers the image
-      height: '95vh',               // Full screen height
-      top:'90px'
-    }} className="relative flex flex-col items-start justify-start text-white">
+      backgroundPosition: 'center top',  // Centers the image
+      height: '100vh',               // Full screen height
+    }} className="relative flex flex-col items-start justify-start text-white pt-32">
       <div className="absolute inset-0 bg-black opacity-50"></div>
       
       <div className="flex-col relative z-10 py-40 px-40 w-2/3">
@@ -27,8 +26,8 @@ const LandingPage: React.FC = () => {
       
     </section>
 
-    <section id="services" className="p-10 bg-yellow-50">
-        <h2 className="text-3xl font-bold mb-6 text-center">Our Services</h2>
+    <section id="services" className="p-10 pt-28 bg-yellow-50">
+        <h2 className="text-6xl font-bold mb-6 text-center text-orange-400">Our Services</h2>
         <p className="text-lg text-center mb-4">Explore our wide range of insurance services:</p>
         <ul className="list-disc list-inside text-center">
           <li>Auto Insurance</li>
@@ -36,7 +35,7 @@ const LandingPage: React.FC = () => {
           <li>Life Insurance</li>
           <li>Business Insurance</li>
         </ul>
-      </section>
+    </section>
     
     </div>
 

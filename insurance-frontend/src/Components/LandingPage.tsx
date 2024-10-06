@@ -27,7 +27,7 @@ const LandingPage: React.FC = () => {
       
     </section>
 
-    <section id="services" className="p-10 bg-gray-100">
+    <section id="services" className="p-10 bg-yellow-50">
         <h2 className="text-3xl font-bold mb-6 text-center">Our Services</h2>
         <p className="text-lg text-center mb-4">Explore our wide range of insurance services:</p>
         <ul className="list-disc list-inside text-center">

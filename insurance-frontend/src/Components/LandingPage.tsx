@@ -28,13 +28,44 @@ const LandingPage: React.FC = () => {
 
     <section id="services" className="p-10 pt-28 bg-yellow-50">
         <h2 className="text-6xl font-bold mb-6 text-center text-orange-400">Our Services</h2>
-        <p className="text-lg text-center mb-4">Explore our wide range of insurance services:</p>
-        <ul className="list-disc list-inside text-center">
-          <li>Auto Insurance</li>
-          <li>Home Insurance</li>
-          <li>Life Insurance</li>
-          <li>Business Insurance</li>
-        </ul>
+        <p className="text-xl text-center mb-4 "><i>Explore our wide range of insurance and tag services below!</i></p>
+        
+        <div className='flex p-10 gap-10'>
+          {/* insurance cards below here */}
+          <div className='flex-col bg-orange-400 text-white p-5'>
+            <h3 className=''>Auto Insurance</h3>
+            <p>
+              Get the coverage you need to stay protected on the road, 
+              no matter where life takes you.
+            </p>
+          </div>
+
+          <div className='flex-col bg-orange-400 text-white p-5'>
+            <h3 className=''>Home Insurance</h3>
+            <p>
+              Protect your home and everything in it with comprehensive 
+              coverage you can trust.
+            </p>
+          </div>
+
+          <div className='flex-col bg-orange-400 text-white p-5'>
+            <h3 className=''>Business Insurance</h3>
+            <p>
+              Protect your business from unexpected risks with tailored 
+              insurance solutions.
+            </p>
+          </div>
+
+          <div className='flex-col bg-orange-400 text-white p-5'>
+            <h3 className=''>Life Insurance</h3>
+            <p className=''>
+              Ensure your loved ones are financially secure with a life 
+              insurance plan that meets your needs.
+            </p>
+          </div>
+
+        </div>
+
     </section>
     
     </div>

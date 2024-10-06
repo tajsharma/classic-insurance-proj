@@ -18,17 +18,17 @@ const Navbar: React.FC = () => {
 
     return (
       <nav className="bg-yellow-50 p-6 fixed top-0 z-50 flex w-full ">
-        <div className="container mx-auto flex justify-between">
+        <div className="container mx-auto flex justify-between items-center">
           <Link to="/" className="text-white text-xl">
               <img src={logo} alt='Classic Insurance Agency logo' className='w-80'></img>
           </Link>
           <div>
-            <a href="#services" onClick={goToServices} className="text-black-300 hover:text-orange-400 mx-2">Services</a>
-            <Link to="/auto" className="text-black-300 hover:text-orange-400 mx-2">Auto</Link>
-            <Link to="/home" className="text-black-300 hover:text-orange-400 mx-2">Home</Link>
-            <Link to="/life" className="text-black-300 hover:text-orange-400 mx-2">Life</Link>
-            <Link to="/business" className="text-black-300 hover:text-orange-400 mx-2">Business</Link>
-            <Link to="/admin" className="text-black-300 hover:text-orange-400 mx-2">Admin</Link>
+            <a href="#services" onClick={goToServices} className="text-black-300 hover:text-orange-400 mx-4 text-xl">Services</a>
+            <Link to="/auto" className="text-black-300 hover:text-orange-400 mx-4 text-xl">Auto</Link>
+            <Link to="/home" className="text-black-300 hover:text-orange-400 mx-4 text-xl">Home</Link>
+            <Link to="/life" className="text-black-300 hover:text-orange-400 mx-4 text-xl">Life</Link>
+            <Link to="/business" className="text-black-300 hover:text-orange-400 mx-4 text-xl">Business</Link>
+            <Link to="/admin" className="text-black-300 hover:text-orange-400 mx-4 text-xl">Admin</Link>
           </div>
 
           <div>

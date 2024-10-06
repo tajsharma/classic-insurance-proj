@@ -1,5 +1,6 @@
 import React from 'react';
-import bgimage from '../Assets/family-matters.jpg'
+import bgimage from '../Assets/family-matters.jpg';
+import { Link } from 'react-router-dom';
 
 const LandingPage: React.FC = () => {
   return (
@@ -29,43 +30,49 @@ const LandingPage: React.FC = () => {
     <section id="services" className="p-10 pt-28 bg-yellow-50">
         <h2 className="text-6xl font-bold mb-6 text-center text-orange-400">Our Services</h2>
         <p className="text-xl text-center mb-4 "><i>Explore our wide range of insurance and tag services below!</i></p>
+
+        <h3 className='text-4xl pt-14 text-center pb-5'>Need <span className='text-orange-400 font-bold'>Insurance?</span> Check out what we offer below.</h3>
         
         <div className='flex p-10 justify-between'>
           {/* insurance cards below here */}
-          <div className='flex-col bg-orange-400 text-white p-5 rounded-lg w-96 text-center'>
+          {/* Auto insurance card*/}
+          <div className='flex-col bg-orange-400 text-white p-10 rounded-lg w-96 text-center'>
             <h3 className='py-3 text-3xl font-bold'>Auto Insurance</h3>
-            <p className='text-xl'>
+            <p className='text-xl pb-7'>
               Get the coverage you need to stay protected on the road, 
               no matter where life takes you.
             </p>
+            <Link to="/auto" className="text-black hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Get a Quote!</Link>
           </div>
-
-          <div className='flex-col bg-orange-400 text-white p-5 rounded-lg w-96 text-center'>
+          {/* Home insurance card*/}
+          <div className='flex-col bg-orange-400 text-white p-10 rounded-lg w-96 text-center'>
             <h3 className='py-3 text-3xl font-bold'>Home Insurance</h3>
-            <p className='text-xl'>
+            <p className='text-xl pb-7'>
               Protect your home and everything in it with comprehensive 
               coverage you can trust.
             </p>
+            <Link to="/home" className="text-black hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Get a Quote!</Link>
           </div>
-
-          <div className='flex-col bg-orange-400 text-white p-5 rounded-lg w-96 text-center'>
+          {/* Business insurance card*/}
+          <div className='flex-col bg-orange-400 text-white p-10 rounded-lg w-96 text-center'>
             <h3 className='py-3 text-3xl font-bold'>Business Insurance</h3>
-            <p className='text-xl'>
+            <p className='text-xl pb-7'>
               Protect your business from unexpected risks with tailored 
               insurance solutions.
             </p>
+            <Link to="/business" className="text-black hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Get a Quote!</Link>
           </div>
-
-          <div className='flex-col bg-orange-400 text-white p-5 rounded-lg w-96 text-center'>
+          {/* Life insurance card*/}
+          <div className='flex-col bg-orange-400 text-white p-10 rounded-lg w-96 text-center'>
             <h3 className='py-3 text-3xl font-bold'>Life Insurance</h3>
-            <p className='text-xl'>
-              Ensure your loved ones are financially secure with a life 
+            <p className='text-xl pb-7'>
+              Ensure your loved ones are secure with a life 
               insurance plan that meets your needs.
             </p>
+            <Link to="/life" className="text-black hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Get a Quote!</Link>
           </div>
 
         </div>
-
     </section>
     
     </div>

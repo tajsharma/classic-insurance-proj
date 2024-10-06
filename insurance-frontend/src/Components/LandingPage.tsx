@@ -3,6 +3,7 @@ import bgimage from '../Assets/family-matters.jpg'
 
 const LandingPage: React.FC = () => {
   return (
+    <div>
     <section style={{
       backgroundImage: `url(${bgimage})`,
       backgroundSize: 'cover',       // Ensures the image covers the entire div
@@ -25,6 +26,19 @@ const LandingPage: React.FC = () => {
       </div>
       
     </section>
+
+    <section id="services" className="p-10 bg-gray-100">
+        <h2 className="text-3xl font-bold mb-6 text-center">Our Services</h2>
+        <p className="text-lg text-center mb-4">Explore our wide range of insurance services:</p>
+        <ul className="list-disc list-inside text-center">
+          <li>Auto Insurance</li>
+          <li>Home Insurance</li>
+          <li>Life Insurance</li>
+          <li>Business Insurance</li>
+        </ul>
+      </section>
+    
+    </div>
 
   );
 };

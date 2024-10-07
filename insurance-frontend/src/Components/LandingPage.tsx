@@ -1,5 +1,9 @@
 import React from 'react';
 import bgimage from '../Assets/family-matters.jpg';
+import car_icon from '../Assets/Icons/Car.png';
+import home_icon from '../Assets/Icons/Home.png';
+import business_icon from '../Assets/Icons/Business.png';
+import life_icon from '../Assets/Icons/LifeInsurance.png';
 import { Link } from 'react-router-dom';
 
 const LandingPage: React.FC = () => {
@@ -35,8 +39,10 @@ const LandingPage: React.FC = () => {
         
         <div className='flex p-10 justify-between'>
           {/* insurance cards below here */}
+
           {/* Auto insurance card*/}
           <div className='flex-col bg-orange-400 text-white p-10 rounded-lg w-96 text-center'>
+            <img src={car_icon} alt='Auto icon' className='mx-auto'></img>
             <h3 className='py-3 text-3xl font-bold'>Auto Insurance</h3>
             <p className='text-xl pb-7'>
               Get the coverage you need to stay protected on the road, 
@@ -44,8 +50,10 @@ const LandingPage: React.FC = () => {
             </p>
             <Link to="/auto" className="text-black hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Get a Quote!</Link>
           </div>
+
           {/* Home insurance card*/}
           <div className='flex-col bg-orange-400 text-white p-10 rounded-lg w-96 text-center'>
+            <img src={home_icon} alt='Auto icon' className='mx-auto'></img>
             <h3 className='py-3 text-3xl font-bold'>Home Insurance</h3>
             <p className='text-xl pb-7'>
               Protect your home and everything in it with comprehensive 
@@ -53,8 +61,10 @@ const LandingPage: React.FC = () => {
             </p>
             <Link to="/home" className="text-black hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Get a Quote!</Link>
           </div>
+
           {/* Business insurance card*/}
           <div className='flex-col bg-orange-400 text-white p-10 rounded-lg w-96 text-center'>
+            <img src={business_icon} alt='Auto icon' className='mx-auto'></img>
             <h3 className='py-3 text-3xl font-bold'>Business Insurance</h3>
             <p className='text-xl pb-7'>
               Protect your business from unexpected risks with tailored 
@@ -62,8 +72,10 @@ const LandingPage: React.FC = () => {
             </p>
             <Link to="/business" className="text-black hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Get a Quote!</Link>
           </div>
+
           {/* Life insurance card*/}
           <div className='flex-col bg-orange-400 text-white p-10 rounded-lg w-96 text-center'>
+            <img src={life_icon} alt='Auto icon' className='mx-auto'></img>
             <h3 className='py-3 text-3xl font-bold'>Life Insurance</h3>
             <p className='text-xl pb-7'>
               Ensure your loved ones are secure with a life 

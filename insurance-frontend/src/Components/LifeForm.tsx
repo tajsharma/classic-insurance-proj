@@ -22,7 +22,7 @@ const LifeForm: React.FC = () =>{
     };
   
     return (
-      <div className="p-10 bg-white rounded-lg shadow-md max-w-2xl mx-auto mt-10">
+      <div className="p-10 pt-24 bg-white rounded-lg shadow-md max-w-2xl mx-auto mt-10">
         <h2 className="text-4xl font-bold text-orange-400 text-center mb-6">Life Insurance Form</h2>
         
         <form onSubmit={handleSubmit}>

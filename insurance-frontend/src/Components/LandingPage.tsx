@@ -4,9 +4,33 @@ import car_icon from '../Assets/Icons/Car.png';
 import home_icon from '../Assets/Icons/Home.png';
 import business_icon from '../Assets/Icons/Business.png';
 import life_icon from '../Assets/Icons/LifeInsurance.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const LandingPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const gotToTag = (e: React.MouseEvent) =>{
+    e.preventDefault();
+    navigate('/');
+
+    setTimeout(()=>{
+      const servicesSection = document.getElementById('tag');
+      if (servicesSection) {
+        servicesSection.scrollIntoView({ behavior: 'smooth' });  // Scroll to services
+      }},100);
+  };
+
+  const goToServices = (e: React.MouseEvent) =>{
+    e.preventDefault();
+    navigate('/');
+
+    setTimeout(()=>{
+      const servicesSection = document.getElementById('services');
+      if (servicesSection) {
+        servicesSection.scrollIntoView({ behavior: 'smooth' });  // Scroll to services
+      }},100);
+  };
+
   return (
     <div>
       <section style={{
@@ -24,8 +48,14 @@ const LandingPage: React.FC = () => {
           <p className="mt-4 text-3xl py-2 w-9/12">Insurance shouldn't be difficult, click below get to a quote today to protect your assets with us.</p>
 
           <div className='flex gap-12 w-9/12 pt-10 py-10'>
-            <button className='text-white border text-2xl rounded-lg border-orange-400 py-3 px-10 bg-orange-400'>Get a quote</button>
-            <button className='text-white border text-2xl rounded-lg border-orange-400 py-3 px-10 bg-orange-400'>Tag & Title</button>
+            <a href="#services" onClick={goToServices}>
+              <button className='text-white border text-2xl rounded-lg border-orange-400 py-3 px-10 bg-orange-400'>Get a quote</button>
+            </a>
+            
+            <a href='#tag' onClick={gotToTag}>
+              <button className='text-white border text-2xl rounded-lg border-orange-400 py-3 px-10 bg-orange-400'>Tag & Title</button>
+            </a>
+            
           </div>
         </div>
         
@@ -87,7 +117,7 @@ const LandingPage: React.FC = () => {
           </div>
       </section>
 
-      <section className='pt-28 p-10 bg-orange-200 flex flex-col items-center justify-center'>
+      <section id="tag" className='pt-28 p-10 bg-orange-200 flex flex-col items-center justify-center'>
         <h2 className="text-6xl  font-bold mb-6 text-center text-blue-900">Tag & Title</h2>
         <p className="text-xl text-blue-900 text-center mb-4 w-4/12 py-5"><i>
           Behind on your <span className='text-orange-400 font-bold'>Tags?</span> Explore our full suite of <span className='text-orange-400 font-bold'>tag, title,</span> 

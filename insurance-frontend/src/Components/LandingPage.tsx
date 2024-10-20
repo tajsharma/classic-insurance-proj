@@ -35,7 +35,7 @@ const LandingPage: React.FC = () => {
           <h2 className="text-6xl font-bold mb-6 text-center text-orange-400">Our Services</h2>
           <p className="text-xl text-center mb-4 "><i>Explore our wide range of insurance and tag services below!</i></p>
 
-          <h3 className='text-4xl pt-14 text-center pb-5'>Need <span className='text-orange-400 font-bold'>Insurance?</span> Check out what we offer below.</h3>
+          <h3 className='text-4xl pt-14 text-center pb-5'>Need <span className='text-orange-400 font-bold'>Insurance?</span> Check out what we offer!</h3>
           
           <div className='flex p-10 justify-between'>
             {/* insurance cards below here */}
@@ -87,10 +87,51 @@ const LandingPage: React.FC = () => {
           </div>
       </section>
 
-      <section className=''>
-        
+      <section className='pt-28 p-10 bg-orange-200 flex flex-col items-center justify-center'>
+        <h2 className="text-6xl  font-bold mb-6 text-center text-blue-900">Tag & Title</h2>
+        <p className="text-xl text-blue-900 text-center mb-4 w-4/12 py-5"><i>
+          Behind on your <span className='text-orange-400 font-bold'>Tags?</span> Explore our full suite of <span className='text-orange-400 font-bold'>tag, title,</span> 
+          and <span className='text-orange-400 font-bold'>insurance</span> services—your one-stop solution for fast, 
+          convenient vehicle and insurance management in Maryland.
+        </i></p>
+
+        <div id="tag-title-card" className='flex flex-row gap-20 '>
+          <div className='flex-col bg-blue-900 text-white p-5 rounded-lg w-96 pb-10 text-center'>
+            <h3 className='py-3 text-3xl font-bold'>Vehicle Registration</h3>
+            <p className='text-l pb-7'>New or Salvaged, we got you covered!</p>
+            <Link to="/admin" className="text-blue-900 hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Register Here!</Link>
+          </div>
+
+          <div className='flex-col bg-blue-900 text-white p-5 rounded-lg w-96 text-center'>
+            <h3 className='py-3 text-3xl font-bold'>Duplicate Title</h3>
+            <p className='text-l pb-10'>Maryland Duplicate Title Request Form.</p>
+            <Link to="/admin" className="text-blue-900  hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Request Here!</Link>
+          </div>
+
+          <div className='flex-col bg-blue-900 text-white p-5 rounded-lg w-96 text-center'>
+            <h3 className='py-3 text-3xl font-bold'>Title Registration </h3>
+            <p className='text-l pb-7'>Maryland Title registration form.</p>
+            <Link to="/admin" className="text-blue-900 hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Register Here!</Link>
+          </div>
+        </div>
+
+        <h3 className='text-4xl text-blue-900 pt-14 text-center pb-10'>Don't see what you need? Click below to see all of our Tag & Title Services!</h3>
+        <Link to="/admin" className="text-white font-bold hover:text-orange-400 bg-blue-900 italic rounded-lg mx-4 text-2xl p-4 px-10">Click here!</Link>
+
+      </section>
+
+      <section id='about' className='p-10 flex justify-center'>
+          <h1 className='text-2xl'> about picture bg </h1>
       </section>
     
+      <section id='contact' className='p-10 bg-red-200  flex justify-center'>
+          <h1 className='text-2xl'> Contact US! </h1>
+      </section>
+
+      <section id='footer' className='p-10 bg-blue-200  flex justify-center'>
+          <h1 className='text-2xl'> footer here </h1>
+      </section>
+
     </div>
 
   );

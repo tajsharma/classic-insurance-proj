@@ -99,24 +99,24 @@ const LandingPage: React.FC = () => {
           <div className='flex-col bg-blue-900 text-white p-5 rounded-lg w-96 pb-10 text-center'>
             <h3 className='py-3 text-3xl font-bold'>Vehicle Registration</h3>
             <p className='text-l pb-7'>New or Salvaged, we got you covered!</p>
-            <Link to="/admin" className="text-blue-900 hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Register Here!</Link>
+            <Link to="/tag&title" className="text-blue-900 hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Register Here!</Link>
           </div>
 
           <div className='flex-col bg-blue-900 text-white p-5 rounded-lg w-96 text-center'>
             <h3 className='py-3 text-3xl font-bold'>Duplicate Title</h3>
             <p className='text-l pb-10'>Maryland Duplicate Title Request Form.</p>
-            <Link to="/admin" className="text-blue-900  hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Request Here!</Link>
+            <Link to="/tag&title" className="text-blue-900  hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Request Here!</Link>
           </div>
 
           <div className='flex-col bg-blue-900 text-white p-5 rounded-lg w-96 text-center'>
             <h3 className='py-3 text-3xl font-bold'>Title Registration </h3>
             <p className='text-l pb-7'>Maryland Title registration form.</p>
-            <Link to="/admin" className="text-blue-900 hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Register Here!</Link>
+            <Link to="/tag&title" className="text-blue-900 hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Register Here!</Link>
           </div>
         </div>
 
         <h3 className='text-4xl text-blue-900 pt-14 text-center pb-10'>Don't see what you need? Click below to see all of our Tag & Title Services!</h3>
-        <Link to="/admin" className="text-white font-bold hover:text-orange-400 bg-blue-900 italic rounded-lg mx-4 text-2xl p-4 px-10">Click here!</Link>
+        <Link to="/tag&title" className="text-white font-bold hover:text-orange-400 bg-blue-900 italic rounded-lg mx-4 text-2xl p-4 px-10">Click here!</Link>
 
       </section>
 

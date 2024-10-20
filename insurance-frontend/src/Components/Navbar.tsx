@@ -28,7 +28,7 @@ const Navbar: React.FC = () => {
             <Link to="/home" className="text-black-300 hover:text-orange-400 mx-4 text-xl">Home</Link>
             <Link to="/life" className="text-black-300 hover:text-orange-400 mx-4 text-xl">Life</Link>
             <Link to="/business" className="text-black-300 hover:text-orange-400 mx-4 text-xl">Business</Link>
-            <Link to="/admin" className="text-black-300 hover:text-orange-400 mx-4 text-xl">Admin</Link>
+            <Link to="/tag&title" className="text-black-300 hover:text-orange-400 mx-4 text-xl">Tag & Title</Link>
           </div>
 
           <div>

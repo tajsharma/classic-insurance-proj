@@ -61,7 +61,7 @@ const LandingPage: React.FC = () => {
         
       </section>
 
-      <section id="services" className="p-10 pt-28 bg-yellow-50">
+      <section id="services" className="p-10 py-28 bg-yellow-50 scroll-mt-20">
           <h2 className="text-6xl font-bold mb-6 text-center text-orange-400">Our Services</h2>
           <p className="text-xl text-center mb-4 "><i>Explore our wide range of insurance and tag services below!</i></p>
 
@@ -117,7 +117,7 @@ const LandingPage: React.FC = () => {
           </div>
       </section>
 
-      <section id="tag" className='py-28 p-10 bg-orange-200 flex flex-col items-center justify-center'>
+      <section id="tag" className='py-28 p-10 bg-orange-200 flex flex-col items-center justify-center scroll-mt-20'>
         <h2 className="text-6xl  font-bold mb-6 text-center text-blue-900">Tag & Title</h2>
         <p className="text-xl text-blue-900 text-center mb-4 w-4/12 py-5"><i>
           Behind on your <span className='text-orange-400 font-bold'>Tags?</span> Explore our full suite of <span className='text-orange-400 font-bold'>tag, title,</span> 

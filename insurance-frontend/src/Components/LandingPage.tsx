@@ -117,7 +117,7 @@ const LandingPage: React.FC = () => {
           </div>
       </section>
 
-      <section id="tag" className='pt-28 p-10 bg-orange-200 flex flex-col items-center justify-center'>
+      <section id="tag" className='py-28 p-10 bg-orange-200 flex flex-col items-center justify-center'>
         <h2 className="text-6xl  font-bold mb-6 text-center text-blue-900">Tag & Title</h2>
         <p className="text-xl text-blue-900 text-center mb-4 w-4/12 py-5"><i>
           Behind on your <span className='text-orange-400 font-bold'>Tags?</span> Explore our full suite of <span className='text-orange-400 font-bold'>tag, title,</span> 
@@ -145,7 +145,7 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        <h3 className='text-4xl text-blue-900 pt-14 text-center pb-10'>Don't see what you need? Click below to see all of our Tag & Title Services!</h3>
+        <h3 className='text-4xl text-blue-900 pt-14 text-center pb-14'>Don't see what you need? Click below to see all of our Tag & Title Services!</h3>
         <Link to="/tag&title" className="text-white font-bold hover:text-orange-400 bg-blue-900 italic rounded-lg mx-4 text-2xl p-4 px-10">Click here!</Link>
 
       </section>

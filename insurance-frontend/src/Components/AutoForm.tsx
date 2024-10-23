@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import axios from 'axios';
 
 const AutoForm: React.FC = () =>{
     const [formData, setFormData] = useState({
@@ -22,17 +23,14 @@ const AutoForm: React.FC = () =>{
       e.preventDefault();
     
       try {
-        const response = await fetch('http://localhost:5000/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
-        });
-    
-        if (response.ok) {
+        const response = await axios.post('http://localhost:5000/submit-auto', formData);
+        
+        if (response.status === 200) {
           alert('Form submitted successfully!');
         } else {
           alert('Failed to submit the form');
         }
+        console.log(response.data);
       } catch (error) {
         console.error('Error submitting the form:', error);
       }

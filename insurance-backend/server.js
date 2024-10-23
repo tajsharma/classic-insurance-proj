@@ -22,6 +22,7 @@ db.connect((err) =>{
     console.log("You have connected to SQL database")
 });
 
+//submit auto form into sql logic
 app.post('/submit-auto', (req,res)=>{
     const{
         name,
@@ -49,6 +50,7 @@ app.post('/submit-auto', (req,res)=>{
     ) 
 } )
 
+//submit home form into sql logic
 app.post('/submit-home', (req,res)=>{
     const{
         name,
@@ -60,7 +62,7 @@ app.post('/submit-home', (req,res)=>{
         coverageAmount
     }=req.body;
 
-    const query = 'INSERT INTO home_insurance (name,email,phone,home_type,home_value,coverage_amount) VALUES (?,?,?,?,?,?)';
+    const query = 'INSERT INTO home_insurance (name, email, phone, home_type, home_value, coverage_amount) VALUES (?,?,?,?,?,?)';
     db.query(
         query, [name,email,phone, propertyAddress, homeType, homeValue, coverageAmount],
         (err,result) => {
@@ -74,7 +76,55 @@ app.post('/submit-home', (req,res)=>{
     )
 })
 
+//submit life form into sql logic
+app.post('/submit-life', (req,res)=>{
+    const{
+        name,
+        email,
+        phone,
+        coverageType,
+        coverageAmount,
+        beneficiary,
+    }=req.body;
 
+    const query = 'INSERT INTO life_insurance (name, email, phone, type_of_coverage, coverage_amount, beneficiary_name) VALUES (?,?,?,?,?,?)';
+    db.query(
+        query, [name, email, phone, coverageType, coverageAmount, beneficiary,],
+        (err,result) => {
+            if(err) {
+                console.error("Error inserting data:",err);
+                res.status(500).json({ error: 'Database error' });
+            }else{
+              res.status(200).json({ message: 'Form submitted successfully' });  
+            }
+        }
+    )
+})
+
+//submit business form into sql logic
+app.post('/submit-business', (req,res)=>{
+    const{
+        name,
+        email,
+        phone,
+        businessName,
+        businessType,
+        coverageAmount,
+    }=req.body;
+
+    const query = 'INSERT INTO business_insurance (name, email, phone, business_name, business_type, coverage_amount) VALUES (?,?,?,?,?,?)';
+    db.query(
+        query, [name, email, phone, businessName, businessType, coverageAmount],
+        (err,result) => {
+            if(err) {
+                console.error("Error inserting data:",err);
+                res.status(500).json({ error: 'Database error' });
+            }else{
+              res.status(200).json({ message: 'Form submitted successfully' });  
+            }
+        }
+    )
+})
 
 
 //start the server

@@ -49,6 +49,31 @@ app.post('/submit-auto', (req,res)=>{
     ) 
 } )
 
+app.post('/submit-home', (req,res)=>{
+    const{
+        name,
+        email,
+        phone,
+        propertyAddress,
+        homeType,
+        homeValue,
+        coverageAmount
+    }=req.body;
+
+    const query = 'INSERT INTO home_insurance (name,email,phone,home_type,home_value,coverage_amount) VALUES (?,?,?,?,?,?)';
+    db.query(
+        query, [name,email,phone, propertyAddress, homeType, homeValue, coverageAmount],
+        (err,result) => {
+            if(err) {
+                console.error("Error inserting data:",err);
+                res.status(500).json({ error: 'Database error' });
+            }else{
+              res.status(200).json({ message: 'Form submitted successfully' });  
+            }
+        }
+    )
+})
+
 
 
 

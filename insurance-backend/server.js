@@ -22,10 +22,7 @@ db.connect((err) =>{
     console.log("You have connected to SQL database")
 });
 
-app.post('/submit', (req,res)=>{
-
-    console.log(req.body);
-
+app.post('/submit-auto', (req,res)=>{
     const{
         name,
         email,
@@ -51,6 +48,10 @@ app.post('/submit', (req,res)=>{
         }
     ) 
 } )
+
+
+
+
 //start the server
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

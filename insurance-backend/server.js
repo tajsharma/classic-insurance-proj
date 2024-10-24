@@ -139,8 +139,44 @@ app.get('/admin/auto-data', (req, res) => {
       }
       res.status(200).json(results); // Send the data as JSON
     });
-  });
-  
+});
+
+app.get('/admin/home-data', (req, res) => {
+    const query = 'SELECT * FROM home_insurance';
+
+    db.query(query, (err, results) => {
+        if (err) {
+        console.error('Error fetching data:', err);
+        return res.status(500).json({ error: 'Database error' });
+        }
+        res.status(200).json(results); // Send the data as JSON
+    });
+});
+
+app.get('/admin/business-data', (req, res) => {
+    const query = 'SELECT * FROM business_insurance';
+
+    db.query(query, (err, results) => {
+        if (err) {
+        console.error('Error fetching data:', err);
+        return res.status(500).json({ error: 'Database error' });
+        }
+        res.status(200).json(results); // Send the data as JSON
+    });
+});
+
+app.get('/admin/auto-data', (req, res) => {
+    const query = 'SELECT * FROM life_insurance';
+
+    db.query(query, (err, results) => {
+        if (err) {
+        console.error('Error fetching data:', err);
+        return res.status(500).json({ error: 'Database error' });
+        }
+        res.status(200).json(results); // Send the data as JSON
+    });
+});
+
 
 
 //start the server

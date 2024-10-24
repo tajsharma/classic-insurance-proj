@@ -127,6 +127,22 @@ app.post('/submit-business', (req,res)=>{
 })
 
 
+//logic to get data from auto database
+// Route to retrieve all auto insurance form submissions
+app.get('/admin/auto-data', (req, res) => {
+    const query = 'SELECT * FROM auto_insurance';
+  
+    db.query(query, (err, results) => {
+      if (err) {
+        console.error('Error fetching data:', err);
+        return res.status(500).json({ error: 'Database error' });
+      }
+      res.status(200).json(results); // Send the data as JSON
+    });
+  });
+  
+
+
 //start the server
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -134,7 +134,7 @@ const LandingPage: React.FC = () => {
 
           <div className='flex-col bg-blue-900 text-white p-5 rounded-lg w-96 text-center'>
             <h3 className='py-3 text-3xl font-bold'>Duplicate Title</h3>
-            <p className='text-l pb-10'>Maryland Duplicate Title Request Form.</p>
+            <p className='text-l pb-7'>Maryland Duplicate Title Request Form.</p>
             <Link to="/tag&title" className="text-blue-900  hover:text-orange-400 bg-white italic rounded-lg mx-4 text-xl p-4">Request Here!</Link>
           </div>
 

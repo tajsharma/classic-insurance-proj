@@ -7,6 +7,7 @@ import AutoForm from './Components/AutoForm';
 import LifeForm from './Components/LifeForm';
 import HomeForm from './Components/HomeForm';
 import AdminPage from './Components/AdminPage';
+import Login from './Components/Login';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="/life" element={<LifeForm/>} />
           <Route path="/home" element={<HomeForm/>} />
           <Route path='/admin' element={<AdminPage/>}/>
+          <Route path='/login' element={<Login/>}/>
         </Routes>
       </div>
     </Router>

@@ -28,7 +28,7 @@ db.connect((err) =>{
 //hard coded credentials for now 
 const ADMIN_CREDENTIALS = {
     username: 'admin',
-    password: '$2a$10$3pIsxz3BlpQgHbZpCFowY.WwWQ/5u5FSNqgMG/Fu/XHDO9BR6uLaG', // "password123"
+    password: '$2a$10$dtC5K6A.vQltH3pT9GP5ve9p5g//Rhcz/IX5e3vsAC5Yf4hZN4V8W', // "password123"
 };
 
 //login endpoint

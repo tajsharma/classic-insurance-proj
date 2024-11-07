@@ -2,6 +2,8 @@ const express = require('express');
 const mysql = require( 'mysql2');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 //intialize express
 const app = express();
@@ -129,9 +131,8 @@ app.post('/submit-business', (req,res)=>{
 
 //logic to get data from auto database
 // Route to retrieve all auto insurance form submissions
-app.get('/admin/auto-data', (req, res) => {
+app.get('/admin/auto-data', verifyToken,(req, res) => {
     const query = 'SELECT * FROM auto_insurance';
-  
     db.query(query, (err, results) => {
       if (err) {
         console.error('Error fetching data:', err);
@@ -141,9 +142,8 @@ app.get('/admin/auto-data', (req, res) => {
     });
 });
 
-app.get('/admin/home-data', (req, res) => {
+app.get('/admin/home-data', verifyToken,(req, res) => {
     const query = 'SELECT * FROM home_insurance';
-
     db.query(query, (err, results) => {
         if (err) {
         console.error('Error fetching data:', err);
@@ -153,9 +153,8 @@ app.get('/admin/home-data', (req, res) => {
     });
 });
 
-app.get('/admin/business-data', (req, res) => {
+app.get('/admin/business-data', verifyToken, (req, res) => {
     const query = 'SELECT * FROM business_insurance';
-
     db.query(query, (err, results) => {
         if (err) {
         console.error('Error fetching data:', err);
@@ -165,19 +164,59 @@ app.get('/admin/business-data', (req, res) => {
     });
 });
 
-app.get('/admin/auto-data', (req, res) => {
-    const query = 'SELECT * FROM life_insurance';
-
+app.get('/admin/auto-data', verifyToken, (req, res) => {
+    const query = 'SELECT * FROM auto_insurance';
     db.query(query, (err, results) => {
         if (err) {
         console.error('Error fetching data:', err);
         return res.status(500).json({ error: 'Database error' });
         }
-        res.status(200).json(results); // Send the data as JSON
-    });
+        res.status(200).json(results);
+  });
+});
+
+// LOGIN PAGE CODE IS BELOW THIS LINE
+//hard coded credentials for now 
+const ADMIN_CREDENTIALS = {
+    username: 'admin',
+    password: '$2a$10$3pIsxz3BlpQgHbZpCFowY.WwWQ/5u5FSNqgMG/Fu/XHDO9BR6uLaG', // "password123"
+};
+
+//login endpoint
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+  
+    if (username !== ADMIN_CREDENTIALS.username) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+  
+    const isPasswordValid = await bcrypt.compare(password, ADMIN_CREDENTIALS.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+  
+    // Generate JWT
+    const token = jwt.sign({ username }, 'secret_key', { expiresIn: '1h' });
+    res.status(200).json({ token });
 });
 
 
+const verifyToken = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1]; // Extract token
+  
+    if (!token) {
+      return res.status(401).json({ message: 'Access denied' });
+    }
+  
+    try {
+      const decoded = jwt.verify(token, 'secret_key'); // Verify token
+      req.user = decoded; // Attach user info to the request object
+      next();
+    } catch (err) {
+      res.status(401).json({ message: 'Invalid token' });
+    }
+  };
 
 //start the server
 const PORT = 5000;

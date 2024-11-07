@@ -8,6 +8,7 @@ import LifeForm from './Components/LifeForm';
 import HomeForm from './Components/HomeForm';
 import AdminPage from './Components/AdminPage';
 import Login from './Components/Login';
+import ProtectedRoute from './Components/ProtectedRoute';
 
 
 function App() {
@@ -21,7 +22,14 @@ function App() {
           <Route path="/auto" element={<AutoForm/>} />
           <Route path="/life" element={<LifeForm/>} />
           <Route path="/home" element={<HomeForm/>} />
-          <Route path='/admin' element={<AdminPage/>}/>
+          <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminPage />
+            </ProtectedRoute>
+          }
+        />
           <Route path='/login' element={<Login/>}/>
         </Routes>
       </div>

@@ -30,12 +30,12 @@ const Login: React.FC = () =>{
     
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="min-h-screen flex items-center justify-center bg-orange-300">
           <form onSubmit={handleSubmit} className="p-8 bg-white rounded-lg shadow-lg w-1/3">
-            <h2 className="text-2xl font-bold mb-4 text-center">Admin Login</h2>
+            <h2 className="text-3xl font-bold mb-4 text-center text-orange-400">Employee Portal Login</h2>
             {error && <p className="text-red-500 text-center">{error}</p>}
             <div className="mb-4">
-              <label className="block text-lg font-medium mb-2" htmlFor="username">Username</label>
+              <label className="block text-lg font-normal mb-2" htmlFor="username"> Username</label>
               <input
                 type="text"
                 name="username"
@@ -47,7 +47,7 @@ const Login: React.FC = () =>{
               />
             </div>
             <div className="mb-4">
-              <label className="block text-lg font-medium mb-2" htmlFor="password">Password</label>
+              <label className="block text-lg font-normal mb-2" htmlFor="password">Password</label>
               <input
                 type="password"
                 name="password"
@@ -58,7 +58,7 @@ const Login: React.FC = () =>{
                 required
               />
             </div>
-            <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">Log In</button>
+            <button type="submit" className="w-full bg-orange-400 font-medium text-2xl text-white py-2 rounded-lg hover:text-blue-900">Log In</button>
           </form>
         </div>
     );

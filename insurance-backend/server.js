@@ -24,6 +24,50 @@ db.connect((err) =>{
     console.log("You have connected to SQL database")
 });
 
+// LOGIN PAGE CODE IS BELOW THIS LINE -----------------------------------------------------------------------
+//hard coded credentials for now 
+const ADMIN_CREDENTIALS = {
+    username: 'admin',
+    password: '$2a$10$3pIsxz3BlpQgHbZpCFowY.WwWQ/5u5FSNqgMG/Fu/XHDO9BR6uLaG', // "password123"
+};
+
+//login endpoint
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+  
+    if (username !== ADMIN_CREDENTIALS.username) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+  
+    const isPasswordValid = await bcrypt.compare(password, ADMIN_CREDENTIALS.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+  
+    // Generate JWT
+    const token = jwt.sign({ username }, 'secret_key', { expiresIn: '1h' });
+    res.status(200).json({ token });
+});
+
+
+const verifyToken = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1]; // Extract token
+  
+    if (!token) {
+      return res.status(401).json({ message: 'Access denied' });
+    }
+  
+    try {
+      const decoded = jwt.verify(token, 'secret_key'); // Verify token
+      req.user = decoded; // Attach user info to the request object
+      next();
+    } catch (err) {
+      res.status(401).json({ message: 'Invalid token' });
+    }
+  };
+//LOGIN CODE ENDS HERE --------------------------------------------------------------------------------------
+
 //submit auto form into sql logic
 app.post('/submit-auto', (req,res)=>{
     const{
@@ -174,49 +218,6 @@ app.get('/admin/auto-data', verifyToken, (req, res) => {
         res.status(200).json(results);
   });
 });
-
-// LOGIN PAGE CODE IS BELOW THIS LINE
-//hard coded credentials for now 
-const ADMIN_CREDENTIALS = {
-    username: 'admin',
-    password: '$2a$10$3pIsxz3BlpQgHbZpCFowY.WwWQ/5u5FSNqgMG/Fu/XHDO9BR6uLaG', // "password123"
-};
-
-//login endpoint
-
-app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-  
-    if (username !== ADMIN_CREDENTIALS.username) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-  
-    const isPasswordValid = await bcrypt.compare(password, ADMIN_CREDENTIALS.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-  
-    // Generate JWT
-    const token = jwt.sign({ username }, 'secret_key', { expiresIn: '1h' });
-    res.status(200).json({ token });
-});
-
-
-const verifyToken = (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1]; // Extract token
-  
-    if (!token) {
-      return res.status(401).json({ message: 'Access denied' });
-    }
-  
-    try {
-      const decoded = jwt.verify(token, 'secret_key'); // Verify token
-      req.user = decoded; // Attach user info to the request object
-      next();
-    } catch (err) {
-      res.status(401).json({ message: 'Invalid token' });
-    }
-  };
 
 //start the server
 const PORT = 5000;

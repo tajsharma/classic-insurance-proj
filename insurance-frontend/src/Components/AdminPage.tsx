@@ -41,11 +41,11 @@ const AdminPage: React.FC = () => {
       <div className='bg-orange-200 h-screen'> 
       <div className="pt-28 px-5 gap-5 flex justify-end items-center">
       <button
-          className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition duration-200"
+          className="bg-blue-900 text-orange-400 font-bold py-2 px-4 rounded-lg hover:text-white transition duration-200"
         > Employee Profile </button>
         <button
           onClick={handleLogout}
-          className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition duration-200"
+          className="bg-blue-900 text-orange-400 font-bold py-2 px-4 rounded-lg hover:text-white transition duration-200"
         > Logout </button>
       </div>
       <div className="pt-3 p-5">

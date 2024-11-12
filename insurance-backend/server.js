@@ -208,8 +208,8 @@ app.get('/admin/business-data', verifyToken, (req, res) => {
     });
 });
 
-app.get('/admin/auto-data', verifyToken, (req, res) => {
-    const query = 'SELECT * FROM auto_insurance';
+app.get('/admin/life-data', verifyToken, (req, res) => {
+    const query = 'SELECT * FROM life_insurance';
     db.query(query, (err, results) => {
         if (err) {
         console.error('Error fetching data:', err);

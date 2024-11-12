@@ -6,6 +6,14 @@ const AdminPage: React.FC = () => {
     const [data, setData] = useState([]);
     const [endpoint, setEndpoint] = useState('');
     const navigate = useNavigate();
+    const [headers, setHeaders] = useState<string[]>([]);
+
+    const headerMappings: { [key: string]: string[] } = {
+      '/admin/auto-data': ['ID', 'Name', 'Email', 'Phone', 'Vehicle Make', 'Vehicle Model', 'VIN', 'License Number', 'Insurance Company', 'Coverage'],
+      '/admin/home-data': ['ID', 'Name', 'Email', 'Phone', 'Property Address', 'Home Type', 'Home Value', 'Coverage Amount'],
+      '/admin/business-data': ['ID', 'Name', 'Email', 'Phone', 'Business Name', 'Business Type', 'Coverage Amount'],
+      '/admin/life-data':['ID','Name', 'Email', 'Phone', 'Coverage Type', 'Coverage Amount', 'Beneficiary']
+    };
   
     useEffect(() => {
       // Fetch the data from the backend
@@ -23,6 +31,7 @@ const AdminPage: React.FC = () => {
             });
             
             setData(response.data); // Store data in state
+            setHeaders(headerMappings[endpoint] || []);
           } catch (error) {
             console.error('Error fetching data:', error);
           }
@@ -60,24 +69,21 @@ const AdminPage: React.FC = () => {
         <table className="table-auto w-full border-separate border-spacing-2 border-collapse">
           <thead>
             <tr className="bg-orange-400">
-              <th className="px-4 py-2 rounded-lg">ID</th>
-              <th className="px-4 py-2 rounded-lg">Name</th>
-              <th className="px-4 py-2 rounded-lg">Email</th>
-              <th className="px-4 py-2 rounded-lg">Phone</th>
-              <th className="px-4 py-2 rounded-lg">Vehicle Make</th>
-              <th className="px-4 py-2 rounded-lg">Coverage</th>
+              {headers.map((header, index) => (
+                <th key={index} className="px-4 py-2 rounded-lg">
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {data.map((item: any) => (
-              <tr key={item.id}>
-                <td className="border border-gray-300 bg-white px-4 py-2 rounded-lg">{item.id}</td>
-                <td className="border border-gray-300 bg-white px-4 py-2 rounded-lg">{item.name}</td>
-                <td className="border border-gray-300 bg-white px-4 py-2 rounded-lg">{item.email}</td>
-                <td className="border border-gray-300 bg-white px-4 py-2 rounded-lg">{item.phone}</td>
-                <td className="border border-gray-300 bg-white px-4 py-2 rounded-lg">
-                  {item.vehicle_make || item.home_address || item.coverage || 'N/A'}
-                </td>
+            {data.map((item: any, rowIndex) => (
+              <tr key={rowIndex}>
+                {headers.map((header, colIndex) => (
+                  <td key={colIndex} className="border border-gray-300 bg-white px-4 py-2 rounded-lg">
+                    {item[Object.keys(item)[colIndex]] || 'N/A'} {/* Match keys dynamically */}
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>

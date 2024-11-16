@@ -2,35 +2,32 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const AdminPage: React.FC = () => {
-    const [data, setData] = useState([]);
-    const [endpoint, setEndpoint] = useState('');
-    const navigate = useNavigate();
-    const [headers, setHeaders] = useState<string[]>([]);
 
+const AdminPage: React.FC = () => {
+    const [data, setData] = useState<any[]>([]);
+    const [endpoint, setEndpoint] = useState('');
+    const [headers, setHeaders] = useState<string[]>([]);
+    const [contactInfo, setContactInfo] = useState<{ name: string; email: string; phone: string } | null>(null);
+    const [flaggedClients, setFlaggedClients] = useState<number[]>([]); // Track flagged clients by ID
+  
     const headerMappings: { [key: string]: string[] } = {
       '/admin/auto-data': ['ID', 'Name', 'Email', 'Phone', 'Vehicle Make', 'Vehicle Model', 'VIN', 'License Number', 'Insurance Company', 'Coverage'],
       '/admin/home-data': ['ID', 'Name', 'Email', 'Phone', 'Property Address', 'Home Type', 'Home Value', 'Coverage Amount'],
       '/admin/business-data': ['ID', 'Name', 'Email', 'Phone', 'Business Name', 'Business Type', 'Coverage Amount'],
-      '/admin/life-data':['ID','Name', 'Email', 'Phone', 'Coverage Type', 'Coverage Amount', 'Beneficiary']
+      '/admin/life-data': ['ID', 'Name', 'Email', 'Phone', 'Coverage Type', 'Coverage Amount', 'Beneficiary'],
     };
   
     useEffect(() => {
-      // Fetch the data from the backend
       const fetchData = async () => {
         if (endpoint) {
           try {
-            // Retrieve the token from localStorage
             const token = localStorage.getItem('authToken');
-            
-            // Send the token in the Authorization header
             const response = await axios.get(`http://localhost:5000${endpoint}`, {
               headers: {
-                Authorization: `Bearer ${token}`, // Add the Bearer token
+                Authorization: `Bearer ${token}`,
               },
             });
-            
-            setData(response.data); // Store data in state
+            setData(response.data);
             setHeaders(headerMappings[endpoint] || []);
           } catch (error) {
             console.error('Error fetching data:', error);
@@ -40,55 +37,119 @@ const AdminPage: React.FC = () => {
   
       fetchData();
     }, [endpoint]);
-
-    const handleLogout = () => {
-      localStorage.removeItem('authToken'); // Clear the token
-      navigate('/login'); // Redirect to login page
+  
+    // Flag a client
+    const handleFlagClient = (id: number) => {
+      setFlaggedClients((prev) => (prev.includes(id) ? prev.filter((clientId) => clientId !== id) : [...prev, id]));
     };
-    
+  
+    // Show contact info in a modal or pop-up
+    const handleContactClick = (name: string, email: string, phone: string) => {
+      setContactInfo({ name, email, phone });
+    };
+  
+    // Close the contact info modal
+    const closeContactModal = () => {
+      setContactInfo(null);
+    };
+  
     return (
-      <div className='bg-orange-200 h-screen'> 
-      <div className="pt-28 px-5 gap-5 flex justify-end items-center">
-      <button
-          className="bg-orange-400 text-blue-900 font-bold py-2 px-4 rounded-lg hover:text-white transition duration-200"
-        > Employee Profile </button>
-        <button
-          onClick={handleLogout}
-          className="bg-orange-400 text-blue-900 font-bold py-2 px-4 rounded-lg hover:text-white transition duration-200"
-        > Logout </button>
-      </div>
-      <div className="pt-3 p-5">
-        <h1 className="text-4xl font-bold text-center text-blue-900 mb-4">Admin Dashboard</h1>
-        <p className='text-xl text-center mb-4'><i>*Click an option below to start query*</i></p>
-        <div id="buttons" className='py-4 pb-5 flex justify-around'>
-            <button id='get_auto' onClick={() => setEndpoint('/admin/auto-data')} className='text-white  hover:text-orange-400 bg-blue-900  rounded-lg mx-4 text-sm p-1 px-5'>View Auto Insurance</button>
-            <button id='get_home' onClick={() => setEndpoint('/admin/home-data')} className='text-white  hover:text-orange-400 bg-blue-900  rounded-lg mx-4 text-sm p-1 px-5'>View Home Insurance</button>
-            <button id='get_life' onClick={() => setEndpoint('/admin/life-data')} className='text-white  hover:text-orange-400 bg-blue-900  rounded-lg mx-4 text-sm p-1 px-5'>View Life Insurance</button>
-            <button id='get_business' onClick={() => setEndpoint('/admin/business-data')} className='text-white  hover:text-orange-400 bg-blue-900  rounded-lg mx-4 text-sm p-1 px-5'>View Business Insurance</button>
+      <div className="bg-orange-200 h-screen">
+        <div className="pt-28 px-5 gap-5 flex justify-end items-center">
+          <button className="bg-orange-400 text-blue-900 font-bold py-2 px-4 rounded-lg hover:text-white transition duration-200">Employee Profile</button>
+          <button
+            className="bg-orange-400 text-blue-900 font-bold py-2 px-4 rounded-lg hover:text-white transition duration-200"
+            onClick={() => {
+              localStorage.removeItem('authToken');
+              window.location.href = '/login';
+            }}
+          >
+            Logout
+          </button>
         </div>
-        <table className="table-auto w-full border-separate border-spacing-2 border-collapse">
-          <thead>
-            <tr className="bg-orange-400">
-              {headers.map((header, index) => (
-                <th key={index} className="px-4 py-2 rounded-lg">
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item: any, rowIndex) => (
-              <tr key={rowIndex}>
-                {headers.map((header, colIndex) => (
-                  <td key={colIndex} className="border border-gray-300 bg-white px-4 py-2 rounded-lg">
-                    {item[Object.keys(item)[colIndex]] || 'N/A'} {/* Match keys dynamically */}
-                  </td>
+        <div className="pt-3 p-5">
+          <h1 className="text-4xl font-bold text-center text-blue-900 mb-4">Admin Dashboard</h1>
+          <p className="text-xl text-center mb-4">
+            <i>*Click an option below to start query*</i>
+          </p>
+          <div id="buttons" className="py-4 pb-5 flex justify-around">
+            <button onClick={() => setEndpoint('/admin/auto-data')} className="text-white hover:text-orange-400 bg-blue-900 rounded-lg mx-4 text-sm p-1 px-5">
+              View Auto Insurance
+            </button>
+            <button onClick={() => setEndpoint('/admin/home-data')} className="text-white hover:text-orange-400 bg-blue-900 rounded-lg mx-4 text-sm p-1 px-5">
+              View Home Insurance
+            </button>
+            <button onClick={() => setEndpoint('/admin/life-data')} className="text-white hover:text-orange-400 bg-blue-900 rounded-lg mx-4 text-sm p-1 px-5">
+              View Life Insurance
+            </button>
+            <button onClick={() => setEndpoint('/admin/business-data')} className="text-white hover:text-orange-400 bg-blue-900 rounded-lg mx-4 text-sm p-1 px-5">
+              View Business Insurance
+            </button>
+          </div>
+          <table className="table-auto w-full border-separate border-spacing-2 border-collapse">
+            <thead>
+              <tr className="bg-orange-400">
+                {headers.map((header, index) => (
+                  <th key={index} className="px-4 py-2 rounded-lg">
+                    {header}
+                  </th>
                 ))}
+                <th className="px-4 py-2 rounded-lg">Actions</th> {/* Add column for actions */}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {data.map((item: any) => (
+                <tr key={item.id}>
+                  {headers.map((header, colIndex) => (
+                    <td key={colIndex} className="border border-gray-300 bg-white px-4 py-2 rounded-lg">
+                      {item[Object.keys(item)[colIndex]] || 'N/A'}
+                    </td>
+                  ))}
+                  <td className="border border-gray-300 bg-white px-4 py-2 rounded-lg flex gap-2">
+                    <button
+                      onClick={() => handleFlagClient(item.id)}
+                      className={`text-white text-sm px-3 py-1 rounded-lg ${
+                        flaggedClients.includes(item.id) ? 'bg-red-500' : 'bg-blue-500'
+                      }`}
+                    >
+                      {flaggedClients.includes(item.id) ? 'Unflag' : 'Flag'}
+                    </button>
+                    <button
+                      onClick={() => handleContactClick(item.name, item.email, item.phone)}
+                      className="bg-green-500 text-white text-sm px-3 py-1 rounded-lg hover:bg-green-600"
+                    >
+                      Contact
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+  
+        {/* Contact Info Modal */}
+        {contactInfo && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-lg font-bold mb-4">Contact Information</h2>
+              <p>
+                <strong>Name:</strong> {contactInfo.name}
+              </p>
+              <p>
+                <strong>Email:</strong> {contactInfo.email}
+              </p>
+              <p>
+                <strong>Phone:</strong> {contactInfo.phone}
+              </p>
+              <button
+                onClick={closeContactModal}
+                className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     );
   };

@@ -219,6 +219,41 @@ app.get('/admin/life-data', verifyToken, (req, res) => {
   });
 });
 
+
+app.post('/assign-client', verifyToken, (req, res) => {
+    const { clientId, tableName, employeeName } = req.body; // tableName can be auto_insurance, home_insurance, etc.
+  
+    if (!clientId || !tableName || !employeeName) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+  
+    const query = `UPDATE ${tableName} SET assigned_to = ? WHERE id = ?`;
+    db.query(query, [employeeName, clientId], (err, result) => {
+      if (err) {
+        console.error('Error updating client:', err);
+        return res.status(500).json({ error: 'Database error' });
+      }
+      res.status(200).json({ message: 'Client successfully assigned' });
+    });
+  });
+
+  app.post('/unassign-client', verifyToken, (req, res) => {
+    const { clientId, tableName } = req.body;
+  
+    if (!clientId || !tableName) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+  
+    const query = `UPDATE ${tableName} SET assigned_to = NULL WHERE id = ?`;
+    db.query(query, [clientId], (err, result) => {
+      if (err) {
+        console.error('Error updating client:', err);
+        return res.status(500).json({ error: 'Database error' });
+      }
+      res.status(200).json({ message: 'Client successfully unassigned' });
+    });
+  });
+
 //start the server
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

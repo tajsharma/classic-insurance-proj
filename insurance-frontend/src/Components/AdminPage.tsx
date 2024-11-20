@@ -39,9 +39,44 @@ const AdminPage: React.FC = () => {
     }, [endpoint]);
   
     // Flag a client
-    const handleFlagClient = (id: number) => {
-      setFlaggedClients((prev) => (prev.includes(id) ? prev.filter((clientId) => clientId !== id) : [...prev, id]));
+    const tableMappings: { [key: string]: string } = {
+      '/admin/auto-data': 'auto_insurance',
+      '/admin/home-data': 'home_insurance',
+      '/admin/business-data': 'business_insurance',
+      '/admin/life-data': 'life_insurance',
     };
+    
+    const handleFlagClient = async (id: number, isFlagged: boolean) => {
+      try {
+        const token = localStorage.getItem('authToken');
+        const endpoint = isFlagged ? '/unassign-client' : '/assign-client';
+    
+        const tableName = tableMappings[endpoint];
+        if (!tableName) throw new Error('Invalid table mapping'); // Handle unknown endpoints
+    
+        const payload = {
+          clientId: id,
+          tableName,
+          employeeName: 'currentEmployee', // Replace with logged-in employee's name
+        };
+    
+        await axios.post(`http://localhost:5000${endpoint}`, payload, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+    
+        // Update UI based on successful flagging/unflagging
+        if (isFlagged) {
+          setFlaggedClients((prev) => prev.filter((clientId) => clientId !== id));
+        } else {
+          setFlaggedClients((prev) => [...prev, id]);
+        }
+      } catch (error) {
+        console.error('Error updating client:', error);
+      }
+    };
+    
   
     // Show contact info in a modal or pop-up
     const handleContactClick = (name: string, email: string, phone: string) => {
@@ -94,6 +129,7 @@ const AdminPage: React.FC = () => {
                     {header}
                   </th>
                 ))}
+                <th className="px-4 py-2 rounded-lg">Assignee</th>
                 <th className="px-4 py-2 rounded-lg">Actions</th> {/* Add column for actions */}
               </tr>
             </thead>
@@ -105,9 +141,12 @@ const AdminPage: React.FC = () => {
                       {item[Object.keys(item)[colIndex]] || 'N/A'}
                     </td>
                   ))}
+                  <td className="border border-gray-300 bg-white px-4 py-2 rounded-lg">
+                    {item.assigned_to || 'Unassigned'}
+                  </td>
                   <td className="border border-gray-300 bg-white px-4 py-2 rounded-lg flex gap-2">
                     <button
-                      onClick={() => handleFlagClient(item.id)}
+                      onClick={() => handleFlagClient(item.id, flaggedClients.includes(item.id))}
                       className={`text-white text-sm px-3 py-1 rounded-lg ${
                         flaggedClients.includes(item.id) ? 'bg-red-500' : 'bg-blue-500'
                       }`}

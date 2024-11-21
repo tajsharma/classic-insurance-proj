@@ -8,7 +8,7 @@ const AdminPage: React.FC = () => {
     const [endpoint, setEndpoint] = useState('');
     const [headers, setHeaders] = useState<string[]>([]);
     const [contactInfo, setContactInfo] = useState<{ name: string; email: string; phone: string } | null>(null);
-    const [flaggedClients, setFlaggedClients] = useState<number[]>([]); // Track flagged clients by ID
+    const [flaggedClients, setFlaggedClients] = useState<{ [key: string]: number[] }>({}); // Track flagged clients by ID
   
     const headerMappings: { [key: string]: string[] } = {
       '/admin/auto-data': ['ID', 'Name', 'Email', 'Phone', 'Vehicle Make', 'Vehicle Model', 'VIN', 'License Number', 'Insurance Company', 'Coverage'],
@@ -49,9 +49,9 @@ const AdminPage: React.FC = () => {
     const handleFlagClient = async (id: number, isFlagged: boolean) => {
       try {
         const token = localStorage.getItem('authToken');
-        const endpoint = isFlagged ? '/unassign-client' : '/assign-client';
+        const actionEndpoint = isFlagged ? '/unassign-client' : '/assign-client'; // Decide action
     
-        const tableName = tableMappings[endpoint];
+        const tableName = tableMappings[endpoint]; // Map current endpoint to table
         if (!tableName) throw new Error('Invalid table mapping'); // Handle unknown endpoints
     
         const payload = {
@@ -60,22 +60,41 @@ const AdminPage: React.FC = () => {
           employeeName: 'currentEmployee', // Replace with logged-in employee's name
         };
     
-        await axios.post(`http://localhost:5000${endpoint}`, payload, {
+        const response = await axios.post(`http://localhost:5000${actionEndpoint}`, payload, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
     
-        // Update UI based on successful flagging/unflagging
-        if (isFlagged) {
-          setFlaggedClients((prev) => prev.filter((clientId) => clientId !== id));
-        } else {
-          setFlaggedClients((prev) => [...prev, id]);
-        }
+        console.log(response.data); // Debugging
+        alert(response.data.message); // Notify success
+    
+        // Update flagged clients for the current table
+        setFlaggedClients((prev) => {
+          const updatedClients = isFlagged
+            ? (prev[endpoint] || []).filter((clientId) => clientId !== id)
+            : [...(prev[endpoint] || []), id];
+    
+          return { ...prev, [endpoint]: updatedClients }; // Update specific endpoint
+        });
+    
+        // Update the assigned_to field dynamically in the data
+        const updatedData = data.map((client) => {
+          if (client.id === id) {
+            return {
+              ...client,
+              assigned_to: isFlagged ? null : response.data.employeeName, // Update dynamically
+            };
+          }
+          return client;
+        });
+        setData(updatedData);
       } catch (error) {
         console.error('Error updating client:', error);
+        alert('An error occurred while updating the client');
       }
     };
+    
     
   
     // Show contact info in a modal or pop-up
@@ -146,12 +165,12 @@ const AdminPage: React.FC = () => {
                   </td>
                   <td className="border border-gray-300 bg-white px-4 py-2 rounded-lg flex gap-2">
                     <button
-                      onClick={() => handleFlagClient(item.id, flaggedClients.includes(item.id))}
+                      onClick={() => handleFlagClient(item.id, (flaggedClients[endpoint] || []).includes(item.id))}
                       className={`text-white text-sm px-3 py-1 rounded-lg ${
-                        flaggedClients.includes(item.id) ? 'bg-red-500' : 'bg-blue-500'
+                        (flaggedClients[endpoint] || []).includes(item.id) ? 'bg-red-500' : 'bg-blue-500'
                       }`}
                     >
-                      {flaggedClients.includes(item.id) ? 'Unflag' : 'Flag'}
+                      {(flaggedClients[endpoint] || []).includes(item.id) ? 'Unflag' : 'Flag'}
                     </button>
                     <button
                       onClick={() => handleContactClick(item.name, item.email, item.phone)}

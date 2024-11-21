@@ -232,7 +232,8 @@ app.get('/admin/life-data', verifyToken, (req, res) => {
 
 
 app.post('/assign-client', verifyToken, (req, res) => {
-    const { clientId, tableName, employeeName } = req.body; // tableName can be auto_insurance, home_insurance, etc.
+    const { clientId, tableName } = req.body; // tableName can be auto_insurance, home_insurance, etc.
+    const employeeName = req.user.username; // Extracted from the token
   
     if (!clientId || !tableName || !employeeName) {
       return res.status(400).json({ error: 'Missing required fields' });
@@ -244,11 +245,11 @@ app.post('/assign-client', verifyToken, (req, res) => {
         console.error('Error updating client:', err);
         return res.status(500).json({ error: 'Database error' });
       }
-      res.status(200).json({ message: 'Client successfully assigned' });
+      res.status(200).json({ message: 'Client successfully assigned', employeeName });
     });
   });
-
-app.post('/unassign-client', verifyToken, (req, res) => {
+  
+  app.post('/unassign-client', verifyToken, (req, res) => {
     const { clientId, tableName } = req.body;
   
     if (!clientId || !tableName) {
@@ -264,7 +265,7 @@ app.post('/unassign-client', verifyToken, (req, res) => {
       res.status(200).json({ message: 'Client successfully unassigned' });
     });
   });
-
+  
 //start the server
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

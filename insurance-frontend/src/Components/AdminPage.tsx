@@ -48,31 +48,32 @@ const AdminPage: React.FC = () => {
         '/admin/life-data': 'life_insurance',
     };
 
-    const handleDeleteClick = async (clientId: number, tableName: string) => {
-      const confirmDelete = window.confirm("Are you sure you want to delete this client? This action is irreversible.");
-      if (!confirmDelete) return;
-  
-      try {
+    const handleDeleteClick = async (id: number) => {
+      if (window.confirm('Are you sure you want to delete this client? This action is irreversible.')) {
+        try {
           const token = localStorage.getItem('authToken');
-  
-          // Send clientId and tableName in the request body
-          const response = await axios.delete('http://localhost:5001/admin/delete-client', {
+          const tableName = tableMappings[endpoint]; // Map current endpoint to table
+          if (!tableName) throw new Error('Invalid table mapping');
+    
+          const response = await axios.delete(
+            `http://localhost:5001/admin/delete-client?clientId=${id}&tableName=${tableName}`,
+            {
               headers: {
-                  Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`,
               },
-              data: { clientId, tableName }, // Include the necessary fields in the payload
-          });
-           console.log("HERES WHAT UR SENDING ---->",response.data);
+            }
+          );
+    
           alert(response.data.message);
-          
-
-          // Update the UI after deletion
-          setData(data.filter((client) => client.id !== clientId));
-      } catch (error) {
+    
+          // Update the table data after deletion
+          setData((prevData) => prevData.filter((client) => client.id !== id));
+        } catch (error) {
           console.error('Error deleting client:', error);
-          alert('Failed to delete the client.');
+          alert('An error occurred while deleting the client.');
+        }
       }
-  };
+    };    
   
   
     
@@ -207,7 +208,7 @@ const AdminPage: React.FC = () => {
                     </th>
                   ))}
                   <th className="px-4 py-2 rounded-lg">Assignee</th>
-                  <th className="px-4 py-2 rounded-lg">Actions</th>
+                  <th className="px-4 py-2 rounded-lg bg">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -221,7 +222,7 @@ const AdminPage: React.FC = () => {
                     <td className="border border-gray-300 bg-white px-4 py-2 rounded-lg">
                       {item.assigned_to || 'Unassigned'}
                     </td>
-                    <td className="border border-gray-300 bg-white px-4 py-2 rounded-lg flex gap-2">
+                    <td className="border border-gray-300 bg-transparent justify-between px-4 py-2 rounded-lg flex gap-2">
                       <button
                         onClick={() => handleFlagClient(item.id, flaggedClients[endpoint]?.includes(item.id))}
                         className={`text-white text-sm px-3 py-1 rounded-lg ${
@@ -235,6 +236,12 @@ const AdminPage: React.FC = () => {
                         className="bg-green-500 text-white text-sm px-3 py-1 rounded-lg hover:bg-green-600"
                       >
                         Contact
+                      </button>
+                      <button
+                        onClick={() => handleDeleteClick(item.id)}
+                        className="bg-red-500 text-white text-sm px-3 py-1 rounded-lg hover:bg-green-600"
+                      >
+                        Delete
                       </button>
                     </td>
                   </tr>

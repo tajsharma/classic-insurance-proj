@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
     host:'localhost',
     user:'root',
-    password:'Sniper505!',
+    password:'Sniper505',
     database:'insurance_data_dummy',
 });
 
@@ -25,11 +25,14 @@ db.connect((err) =>{
 });
 
 // LOGIN PAGE CODE IS BELOW THIS LINE -----------------------------------------------------------------------
-//hard coded credentials for now 
-const ADMIN_CREDENTIALS = {
-    username: 'admin',
-    password: '$2a$10$dtC5K6A.vQltH3pT9GP5ve9p5g//Rhcz/IX5e3vsAC5Yf4hZN4V8W', // "password123"
-};
+
+app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allow custom headers like Authorization
+  }));
+  
 
 //login endpoint
 
@@ -119,12 +122,13 @@ app.post('/submit-home', (req,res)=>{
         coverageAmount
     }=req.body;
 
-    const query = 'INSERT INTO home_insurance (name, email, phone, home_type, home_value, coverage_amount) VALUES (?,?,?,?,?,?)';
+    const query = 'INSERT INTO home_insurance (name, email, phone, address, home_type, home_value, coverage_amount) VALUES (?,?,?,?,?,?,?)';
     db.query(
         query, [name,email,phone, propertyAddress, homeType, homeValue, coverageAmount],
         (err,result) => {
             if(err) {
                 console.error("Error inserting data:",err);
+                console.log("HERE!!!!",homeValue)
                 res.status(500).json({ error: 'Database error' });
             }else{
               res.status(200).json({ message: 'Form submitted successfully' });  
@@ -265,7 +269,40 @@ app.post('/assign-client', verifyToken, (req, res) => {
       res.status(200).json({ message: 'Client successfully unassigned' });
     });
   });
+
+  app.get('/admin/flagged-clients', verifyToken, (req, res) => {
+    const employeeName = req.user.username; // Extract the employee name from the token
+
+    const queries = [
+        "SELECT * FROM auto_insurance WHERE assigned_to = ?",
+        "SELECT * FROM home_insurance WHERE assigned_to = ?",
+        "SELECT * FROM business_insurance WHERE assigned_to = ?",
+        "SELECT * FROM life_insurance WHERE assigned_to = ?",
+    ];
+
+    const promises = queries.map((query) =>
+        new Promise((resolve, reject) => {
+            db.query(query, [employeeName], (err, results) => {
+                if (err) return reject(err);
+                resolve(results);
+            });
+        })
+    );
+
+    Promise.all(promises)
+        .then((results) => {
+            const allFlaggedClients = [].concat(...results); // Combine all results into one array
+            res.status(200).json(allFlaggedClients);
+        })
+        .catch((err) => {
+            console.error('Error fetching flagged clients:', err);
+            res.status(500).json({ error: 'Database error' });
+        });
+});
+
+
+
   
 //start the server
-const PORT = 5000;
+const PORT = 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

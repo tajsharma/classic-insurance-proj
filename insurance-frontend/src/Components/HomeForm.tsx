@@ -22,7 +22,7 @@ const HomeForm: React.FC = () =>{
       e.preventDefault();
     
       try {
-        const response = await axios.post('http://localhost:5000/submit-home', formData);
+        const response = await axios.post('http://localhost:5001/submit-home', formData);
         
         if (response.status === 200) {
           alert('Form submitted successfully!');

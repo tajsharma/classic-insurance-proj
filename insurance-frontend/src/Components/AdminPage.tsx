@@ -24,7 +24,7 @@ const AdminPage: React.FC = () => {
             if (endpoint) {
                 try {
                     const token = localStorage.getItem('authToken');
-                    const response = await axios.get(`http://localhost:5001${endpoint}`, {
+                    const response = await axios.get(`http://localhost:5000${endpoint}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -56,7 +56,7 @@ const AdminPage: React.FC = () => {
           if (!tableName) throw new Error('Invalid table mapping');
     
           const response = await axios.delete(
-            `http://localhost:5001/admin/delete-client?clientId=${id}&tableName=${tableName}`,
+            `http://localhost:5000/admin/delete-client?clientId=${id}&tableName=${tableName}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -101,7 +101,7 @@ const AdminPage: React.FC = () => {
             employeeName: 'currentEmployee', // Replace with logged-in employee's name
         };
 
-        const response = await axios.post(`http://localhost:5001${actionEndpoint}`, payload, {
+        const response = await axios.post(`http://localhost:5000${actionEndpoint}`, payload, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

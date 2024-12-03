@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
     host:'localhost',
     user:'root',
-    password:'Sniper505',
+    password:'Sniper505!',
     database:'insurance_data_dummy',
 });
 
@@ -331,5 +331,5 @@ app.post('/assign-client', verifyToken, (req, res) => {
 
   
 //start the server
-const PORT = 5001;
+const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

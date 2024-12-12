@@ -23,9 +23,25 @@ const AutoForm: React.FC = () =>{
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
     
+      // Simple validations
+      if (!/^\d{17}$/.test(formData.vin)) {
+        alert('VIN must be 17 digits long.');
+        return;
+      }
+    
+      if (!/^\d+$/.test(formData.phone)) {
+        alert('Phone number must contain only numbers.');
+        return;
+      }
+    
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+    
       try {
         const response = await axios.post('http://localhost:5000/submit-auto', formData);
-        
+    
         if (response.status === 200) {
           alert('Form submitted successfully!');
         } else {
@@ -34,8 +50,11 @@ const AutoForm: React.FC = () =>{
         console.log(response.data);
       } catch (error) {
         console.error('Error submitting the form:', error);
+        alert('An error occurred while submitting the form.');
       }
     };
+    
+
   
     return (
       <div

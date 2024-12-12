@@ -65,6 +65,28 @@ app.post('/login', (req, res) => {
   });
 
 
+const getOrCreateCustomerId = (name, email, phone, callback) => {
+    const findCustomerQuery = 'SELECT id FROM customers WHERE name = ? AND email = ? AND phone = ?';
+    const insertCustomerQuery = 'INSERT INTO customers (name, email, phone) VALUES (?, ?, ?)';
+  
+    db.query(findCustomerQuery, [name, email, phone], (err, results) => {
+      if (err) return callback(err);
+  
+      if (results.length > 0) {
+        // Customer already exists
+        callback(null, results[0].id);
+      } else {
+        // Create a new customer
+        db.query(insertCustomerQuery, [name, email, phone], (err, results) => {
+          if (err) return callback(err);
+          callback(null, results.insertId); // Return the new customer's ID
+        });
+      }
+    });
+  };
+  
+
+
 const verifyToken = (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1]; // Extract token
   
@@ -83,32 +105,45 @@ const verifyToken = (req, res, next) => {
 //LOGIN CODE ENDS HERE --------------------------------------------------------------------------------------
 
 //submit auto form into sql logic
-app.post('/submit-auto', (req,res)=>{
-    const{
-        name,
-        email,
-        phone,
-        vehicleMake,
-        vehicleModel,
-        vin,
-        licenseNumber,
-        insuranceCompany,
-        coverage,
-    }=req.body;
+app.post('/submit-auto', (req, res) => {
+  const {
+    name,
+    email,
+    phone,
+    vehicleMake,
+    vehicleModel,
+    vin,
+    licenseNumber,
+    insuranceCompany,
+    coverage,
+  } = req.body;
 
-    const query = 'INSERT INTO auto_insurance (name, email, phone, vehicle_make, vehicle_model, vin, license_number, insurance_company, coverage) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  getOrCreateCustomerId(name, email, phone, (err, customerId) => {
+    if (err) {
+      console.error('Error fetching or creating customer ID:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+
+    const query = `
+      INSERT INTO auto_insurance 
+      (customer_id, vehicle_make, vehicle_model, vin, license_number, insurance_company, coverage)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
     db.query(
-        query, [name, email, phone, vehicleMake, vehicleModel, vin, licenseNumber, insuranceCompany, coverage],
-        (err,result) => {
-            if(err) {
-                console.error("Error inserting data:",err);
-                res.status(500).json({ error: 'Database error' });
-            }else{
-              res.status(200).json({ message: 'Form submitted successfully' });  
-            }
+      query,
+      [customerId, vehicleMake, vehicleModel, vin, licenseNumber, insuranceCompany, coverage],
+      (err) => {
+        if (err) {
+          console.error('Error inserting data:', err);
+          return res.status(500).json({ error: 'Database error' });
         }
-    ) 
-} )
+        res.status(200).json({ message: 'Form submitted successfully' });
+      }
+    );
+  });
+});
+
+
 
 //submit home form into sql logic
 app.post('/submit-home', (req,res)=>{

@@ -146,31 +146,58 @@ app.post('/submit-auto', (req, res) => {
 
 
 //submit home form into sql logic
-app.post('/submit-home', (req,res)=>{
-    const{
-        name,
-        email,
-        phone,
-        propertyAddress,
-        homeType,
-        homeValue,
-        coverageAmount
-    }=req.body;
+app.post('/submit-home', (req, res) => {
+  const {
+    name,
+    email,
+    phone,
+    propertyAddress,
+    homeType,
+    propertyValue,
+    coverageAmount,
+  } = req.body;
 
-    const query = 'INSERT INTO home_insurance (name, email, phone, address, home_type, home_value, coverage_amount) VALUES (?,?,?,?,?,?,?)';
-    db.query(
-        query, [name,email,phone, propertyAddress, homeType, homeValue, coverageAmount],
-        (err,result) => {
-            if(err) {
-                console.error("Error inserting data:",err);
-                console.log("HERE!!!!",homeValue)
-                res.status(500).json({ error: 'Database error' });
-            }else{
-              res.status(200).json({ message: 'Form submitted successfully' });  
-            }
+  const insuranceType = 'home'; // Set the correct insurance type
+
+  getOrCreateCustomerId(name, email, phone, (err, customerId) => {
+    if (err) {
+      console.error('Error fetching or creating customer ID:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+
+    const updateCustomerQuery = `
+      UPDATE customers
+      SET insurance_type = ?
+      WHERE id = ?
+    `;
+
+    db.query(updateCustomerQuery, [insuranceType, customerId], (err) => {
+      if (err) {
+        console.error('Error updating customer insurance type:', err);
+        return res.status(500).json({ error: 'Database error' });
+      }
+
+      const insertHomeQuery = `
+        INSERT INTO home_insurance 
+        (customer_id, property_address, home_type, property_value, coverage_amount)
+        VALUES (?, ?, ?, ?, ?)
+      `;
+      db.query(
+        insertHomeQuery,
+        [customerId, propertyAddress, homeType, propertyValue, coverageAmount],
+        (err) => {
+          if (err) {
+            console.error('Error inserting data:', err);
+            return res.status(500).json({ error: 'Database error' });
+          }
+          res.status(200).json({ message: 'Form submitted successfully' });
         }
-    )
-})
+      );
+    });
+  });
+});
+
+
 
 //submit life form into sql logic
 app.post('/submit-life', (req,res)=>{

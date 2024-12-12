@@ -9,7 +9,7 @@ const HomeForm: React.FC = () =>{
       phone: '',
       propertyAddress: '',
       homeType: '',
-      homeValue: '',
+      propertyValue: '',
       coverageAmount: '',
     });
   
@@ -23,9 +23,18 @@ const HomeForm: React.FC = () =>{
     
       try {
         const response = await axios.post('http://localhost:5000/submit-home', formData);
-        
+    
         if (response.status === 200) {
           alert('Form submitted successfully!');
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            propertyAddress: '',
+            homeType: '',
+            propertyValue: '',
+            coverageAmount: '',
+          }); // Reset form
         } else {
           alert('Failed to submit the form');
         }
@@ -34,6 +43,7 @@ const HomeForm: React.FC = () =>{
         console.error('Error submitting the form:', error);
       }
     };
+    
   
     return (
       <div
@@ -113,11 +123,11 @@ const HomeForm: React.FC = () =>{
               </div>
       
               <div className="mb-4">
-                <label className="block text-gray-700 text-lg mb-2" htmlFor="homeValue">Home Value</label>
+                <label className="block text-gray-700 text-lg mb-2" htmlFor="propertyValue">Home Value</label>
                 <input 
                   type="text" 
-                  name="homeValue" 
-                  value={formData.homeValue} 
+                  name="propertyValue" 
+                  value={formData.propertyValue} 
                   onChange={handleChange} 
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
                   placeholder="Enter the home value"

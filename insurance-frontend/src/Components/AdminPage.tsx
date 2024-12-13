@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { PassThrough } from 'stream';
+import QuoteSendModal from "./QuoteSendModal";
 
 const AdminPage: React.FC = () => {
     const [data, setData] = useState<any[]>([]);
     const [endpoint, setEndpoint] = useState('');
     const [headers, setHeaders] = useState<string[]>([]);
     const [contactInfo, setContactInfo] = useState<{ name: string; email: string; phone: string } | null>(null);
-    const [flaggedClients, setFlaggedClients] = useState<{ [key: string]: number[] }>({}); // Track flagged clients by ID
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(null);
   
     // Updated headerMappings for all endpoints
     const headerMappings: { [key: string]: string[] } = {
@@ -41,13 +41,29 @@ const AdminPage: React.FC = () => {
         fetchData();
     }, [endpoint]);
 
-    // Flag a client
-    const tableMappings: { [key: string]: string } = {
-        '/admin/auto-data': 'auto_insurance',
-        '/admin/home-data': 'home_insurance',
-        '/admin/business-data': 'business_insurance',
-        '/admin/life-data': 'life_insurance',
+    const openModal = (customerId: number) => {
+        setSelectedCustomerId(customerId);
+        setModalOpen(true);
     };
+
+    const closeModal = () => {
+        setModalOpen(false);
+        setSelectedCustomerId(null);
+    };
+
+    const sendQuote = async (quoteDetails: any) => {
+      try {
+          const token = localStorage.getItem("authToken");
+          const response = await axios.post("http://localhost:5000/quotes", quoteDetails, {
+              headers: { Authorization: `Bearer ${token}` },
+          });
+          alert("Quote sent successfully!");
+          closeModal();
+      } catch (error) {
+          console.error("Error sending quote:", error);
+          alert("Failed to send quote. Please try again.");
+      }
+  };
 
     const handleDeleteClick = async (uniqueId: number) => {
       if (window.confirm('Are you sure you want to delete this client? This action is irreversible.')) {
@@ -209,6 +225,13 @@ const AdminPage: React.FC = () => {
                           Contact
                         </button>
                         <button
+                          onClick={() => openModal(item.unique_id)}
+                          className="bg-green-500 text-white text-sm px-3 py-1 rounded-lg hover:bg-green-600"
+                        >
+                          Send Quote
+                        </button>
+                        
+                        <button
                           onClick={() => handleDeleteClick(item.unique_id)}
                           className="bg-red-500 text-white text-sm px-3 py-1 rounded-lg hover:bg-green-600"
                         >
@@ -219,9 +242,35 @@ const AdminPage: React.FC = () => {
                   ))}
                 </tbody>
             </table>
+            <QuoteSendModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                customerId={selectedCustomerId!}
+                onSendQuote={sendQuote}
+            />
           </div>
           <div className="py-10"></div> {/* Add padding at the bottom */}
         </div>
+        {contactInfo && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white border-4 border-orange-400 rounded-lg shadow-lg p-8 max-w-lg w-full">
+              <h2 className="text-2xl font-bold text-blue-900 mb-4 text-center">Contact Information</h2>
+              <div className="text-lg">
+                <p className="mb-2"><strong>Name:</strong> {contactInfo.name}</p>
+                <p className="mb-2"><strong>Email:</strong> {contactInfo.email}</p>
+                <p className="mb-4"><strong>Phone:</strong> {contactInfo.phone}</p>
+              </div>
+              <div className="flex justify-end">
+                <button
+                  onClick={closeContactModal}
+                  className="bg-orange-400 text-blue-900 font-bold py-2 px-6 rounded-lg hover:bg-orange-500 hover:text-white transition duration-200"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   };    

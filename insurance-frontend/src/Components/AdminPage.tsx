@@ -226,7 +226,7 @@ const AdminPage: React.FC = () => {
                         </button>
                         <button
                           onClick={() => openModal(item.unique_id)}
-                          className="bg-green-500 text-white text-sm px-3 py-1 rounded-lg hover:bg-green-600"
+                          className="bg-yellow-600 text-white text-sm px-3 py-1 rounded-lg hover:bg-green-600"
                         >
                           Send Quote
                         </button>

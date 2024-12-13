@@ -49,18 +49,18 @@ const AdminPage: React.FC = () => {
         '/admin/life-data': 'life_insurance',
     };
 
-    const handleDeleteClick = async (id: number) => {
+    const handleDeleteClick = async (uniqueId: number) => {
       if (window.confirm('Are you sure you want to delete this client? This action is irreversible.')) {
         try {
           const token = localStorage.getItem('authToken');
-          const tableName = tableMappings[endpoint]; // Map current endpoint to table
-          if (!tableName) throw new Error('Invalid table mapping');
-    
           const response = await axios.delete(
-            `http://localhost:5000/admin/delete-client?clientId=${id}&tableName=${tableName}`,
+            `http://localhost:5000/admin/delete-client`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
+              },
+              data: {
+                uniqueId, // Pass the unique_id of the customer
               },
             }
           );
@@ -68,13 +68,15 @@ const AdminPage: React.FC = () => {
           alert(response.data.message);
     
           // Update the table data after deletion
-          setData((prevData) => prevData.filter((client) => client.id !== id));
+          setData((prevData) => prevData.filter((client) => client.unique_id !== uniqueId));
         } catch (error) {
           console.error('Error deleting client:', error);
           alert('An error occurred while deleting the client.');
         }
       }
-    };    
+    };
+    
+      
   
   
     

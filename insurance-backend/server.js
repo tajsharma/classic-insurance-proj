@@ -199,55 +199,109 @@ app.post('/submit-home', (req, res) => {
 
 
 
-//submit life form into sql logic
-app.post('/submit-life', (req,res)=>{
-    const{
-        name,
-        email,
-        phone,
-        coverageType,
-        coverageAmount,
-        beneficiary,
-    }=req.body;
+// Submit life form into SQL logic
+app.post('/submit-life', (req, res) => {
+  const {
+    name,
+    email,
+    phone,
+    coverageType,
+    coverageAmount,
+    beneficiary,
+  } = req.body;
 
-    const query = 'INSERT INTO life_insurance (name, email, phone, type_of_coverage, coverage_amount, beneficiary_name) VALUES (?,?,?,?,?,?)';
-    db.query(
-        query, [name, email, phone, coverageType, coverageAmount, beneficiary,],
-        (err,result) => {
-            if(err) {
-                console.error("Error inserting data:",err);
-                res.status(500).json({ error: 'Database error' });
-            }else{
-              res.status(200).json({ message: 'Form submitted successfully' });  
-            }
+  const insuranceType = 'life'; // Set the insurance type
+
+  getOrCreateCustomerId(name, email, phone, (err, customerId) => {
+    if (err) {
+      console.error('Error fetching or creating customer ID:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+
+    const updateCustomerQuery = `
+      UPDATE customers
+      SET insurance_type = ?
+      WHERE id = ?
+    `;
+
+    db.query(updateCustomerQuery, [insuranceType, customerId], (err) => {
+      if (err) {
+        console.error('Error updating customer insurance type:', err);
+        return res.status(500).json({ error: 'Database error' });
+      }
+
+      const insertLifeQuery = `
+        INSERT INTO life_insurance 
+        (customer_id, type_of_coverage, coverage_amount, beneficiary_name)
+        VALUES (?, ?, ?, ?)
+      `;
+      db.query(
+        insertLifeQuery,
+        [customerId, coverageType, coverageAmount, beneficiary],
+        (err) => {
+          if (err) {
+            console.error('Error inserting data:', err);
+            return res.status(500).json({ error: 'Database error' });
+          }
+          res.status(200).json({ message: 'Form submitted successfully' });
         }
-    )
-})
+      );
+    });
+  });
+});
+
 
 //submit business form into sql logic
-app.post('/submit-business', (req,res)=>{
-    const{
-        name,
-        email,
-        phone,
-        businessName,
-        businessType,
-        coverageAmount,
-    }=req.body;
+app.post('/submit-business', (req, res) => {
+  const {
+    name,
+    email,
+    phone,
+    businessName,
+    businessType,
+    coverageAmount,
+  } = req.body;
 
-    const query = 'INSERT INTO business_insurance (name, email, phone, business_name, business_type, coverage_amount) VALUES (?,?,?,?,?,?)';
-    db.query(
-        query, [name, email, phone, businessName, businessType, coverageAmount],
-        (err,result) => {
-            if(err) {
-                console.error("Error inserting data:",err);
-                res.status(500).json({ error: 'Database error' });
-            }else{
-              res.status(200).json({ message: 'Form submitted successfully' });  
-            }
+  const insuranceType = 'business'; // Set the insurance type
+
+  getOrCreateCustomerId(name, email, phone, (err, customerId) => {
+    if (err) {
+      console.error('Error fetching or creating customer ID:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+
+    const updateCustomerQuery = `
+      UPDATE customers
+      SET insurance_type = ?
+      WHERE id = ?
+    `;
+
+    db.query(updateCustomerQuery, [insuranceType, customerId], (err) => {
+      if (err) {
+        console.error('Error updating customer insurance type:', err);
+        return res.status(500).json({ error: 'Database error' });
+      }
+
+      const insertBusinessQuery = `
+        INSERT INTO business_insurance 
+        (customer_id, business_name, business_type, coverage_amount)
+        VALUES (?, ?, ?, ?)
+      `;
+      db.query(
+        insertBusinessQuery,
+        [customerId, businessName, businessType, coverageAmount],
+        (err) => {
+          if (err) {
+            console.error('Error inserting data:', err);
+            return res.status(500).json({ error: 'Database error' });
+          }
+          res.status(200).json({ message: 'Form submitted successfully' });
         }
-    )
-})
+      );
+    });
+  });
+});
+
 
 // updated deletion logic, no longer from req body
 app.delete('/admin/delete-client', verifyToken, (req, res) => {
@@ -279,114 +333,172 @@ app.delete('/admin/delete-client', verifyToken, (req, res) => {
 
 //logic to get data from auto database
 // Route to retrieve all auto insurance form submissions
-app.get('/admin/auto-data', verifyToken,(req, res) => {
-    const query = 'SELECT * FROM auto_insurance';
-    db.query(query, (err, results) => {
-      if (err) {
-        console.error('Error fetching data:', err);
-        return res.status(500).json({ error: 'Database error' });
-      }
-      res.status(200).json(results); // Send the data as JSON
-    });
-});
-
-app.get('/admin/home-data', verifyToken,(req, res) => {
-    const query = 'SELECT * FROM home_insurance';
-    db.query(query, (err, results) => {
-        if (err) {
-        console.error('Error fetching data:', err);
-        return res.status(500).json({ error: 'Database error' });
-        }
-        res.status(200).json(results); // Send the data as JSON
-    });
-});
-
-app.get('/admin/business-data', verifyToken, (req, res) => {
-    const query = 'SELECT * FROM business_insurance';
-    db.query(query, (err, results) => {
-        if (err) {
-        console.error('Error fetching data:', err);
-        return res.status(500).json({ error: 'Database error' });
-        }
-        res.status(200).json(results); // Send the data as JSON
-    });
-});
-
-app.get('/admin/life-data', verifyToken, (req, res) => {
-    const query = 'SELECT * FROM life_insurance';
-    db.query(query, (err, results) => {
-        if (err) {
-        console.error('Error fetching data:', err);
-        return res.status(500).json({ error: 'Database error' });
-        }
-        res.status(200).json(results);
+// Updated endpoint for viewing auto insurance data
+app.get('/admin/auto-data', verifyToken, (req, res) => {
+  const query = `
+    SELECT 
+      customers.id AS unique_id,  -- The ID from customers table
+      customers.name, 
+      customers.email, 
+      customers.phone, 
+      auto_insurance.vehicle_make, 
+      auto_insurance.vehicle_model, 
+      auto_insurance.vin, 
+      auto_insurance.license_number, 
+      auto_insurance.insurance_company, 
+      auto_insurance.coverage, 
+      auto_insurance.assigned_to
+    FROM 
+      auto_insurance
+    JOIN 
+      customers ON auto_insurance.customer_id = customers.id
+  `;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching auto insurance data:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.status(200).json(results);
   });
 });
+
+
+
+app.get('/admin/home-data', verifyToken, (req, res) => {
+  const query = `
+    SELECT 
+      customers.id AS unique_id,  -- The ID from customers table
+      customers.name,
+      customers.email,
+      customers.phone,
+      home_insurance.property_address,
+      home_insurance.home_type,
+      home_insurance.property_value,
+      home_insurance.coverage_amount,
+      home_insurance.assigned_to
+    FROM 
+      home_insurance
+    JOIN 
+      customers ON home_insurance.customer_id = customers.id
+  `;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching home insurance data:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.status(200).json(results);
+  });
+});
+
+
+
+app.get('/admin/business-data', verifyToken, (req, res) => {
+  const query = `
+    SELECT 
+      customers.id AS unique_id,  -- The ID from customers table
+      customers.name,
+      customers.email,
+      customers.phone,
+      business_insurance.business_name,
+      business_insurance.business_type,
+      business_insurance.coverage_amount,
+      business_insurance.assigned_to
+    FROM 
+      business_insurance
+    JOIN 
+      customers ON business_insurance.customer_id = customers.id
+  `;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching business insurance data:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.status(200).json(results);
+  });
+});
+
+
+
+app.get('/admin/life-data', verifyToken, (req, res) => {
+  const query = `
+    SELECT 
+      customers.id AS unique_id,  -- The ID from customers table
+      customers.name,
+      customers.email,
+      customers.phone,
+      life_insurance.type_of_coverage AS coverage_type,
+      life_insurance.coverage_amount,
+      life_insurance.beneficiary_name AS beneficiary,
+      life_insurance.assigned_to
+    FROM 
+      life_insurance
+    JOIN 
+      customers ON life_insurance.customer_id = customers.id
+  `;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching life insurance data:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.status(200).json(results);
+  });
+});
+
+
 
 
 app.post('/assign-client', verifyToken, (req, res) => {
-    const { clientId, tableName } = req.body; // tableName can be auto_insurance, home_insurance, etc.
-    const employeeName = req.user.username; // Extracted from the token
-  
-    if (!clientId || !tableName || !employeeName) {
+  const { clientId } = req.body; // Client ID to assign
+  const employeeName = req.user.username; // Extract from token
+
+  if (!clientId || !employeeName) {
       return res.status(400).json({ error: 'Missing required fields' });
-    }
-  
-    const query = `UPDATE ${tableName} SET assigned_to = ? WHERE id = ?`;
-    db.query(query, [employeeName, clientId], (err, result) => {
+  }
+
+  const query = `UPDATE customers SET assigned_to = ? WHERE id = ?`;
+  db.query(query, [employeeName, clientId], (err) => {
       if (err) {
-        console.error('Error updating client:', err);
-        return res.status(500).json({ error: 'Database error' });
+          console.error('Error assigning client:', err);
+          return res.status(500).json({ error: 'Database error' });
       }
       res.status(200).json({ message: 'Client successfully assigned', employeeName });
-    });
   });
+});
+
   
-  app.post('/unassign-client', verifyToken, (req, res) => {
-    const { clientId, tableName } = req.body;
-  
-    if (!clientId || !tableName) {
+app.post('/unassign-client', verifyToken, (req, res) => {
+  const { clientId } = req.body;
+
+  if (!clientId) {
       return res.status(400).json({ error: 'Missing required fields' });
-    }
-  
-    const query = `UPDATE ${tableName} SET assigned_to = NULL WHERE id = ?`;
-    db.query(query, [clientId], (err, result) => {
+  }
+
+  const query = `UPDATE customers SET assigned_to = NULL WHERE id = ?`;
+  db.query(query, [clientId], (err) => {
       if (err) {
-        console.error('Error updating client:', err);
-        return res.status(500).json({ error: 'Database error' });
+          console.error('Error unassigning client:', err);
+          return res.status(500).json({ error: 'Database error' });
       }
       res.status(200).json({ message: 'Client successfully unassigned' });
-    });
   });
+});
 
-  app.get('/admin/flagged-clients', verifyToken, (req, res) => {
-    const employeeName = req.user.username; // Extract the employee name from the token
 
-    const queries = [
-        "SELECT * FROM auto_insurance WHERE assigned_to = ?",
-        "SELECT * FROM home_insurance WHERE assigned_to = ?",
-        "SELECT * FROM business_insurance WHERE assigned_to = ?",
-        "SELECT * FROM life_insurance WHERE assigned_to = ?",
-    ];
 
-    const promises = queries.map((query) =>
-        new Promise((resolve, reject) => {
-            db.query(query, [employeeName], (err, results) => {
-                if (err) return reject(err);
-                resolve(results);
-            });
-        })
-    );
+app.get('/admin/flagged-clients', verifyToken, (req, res) => {
+  const query = `
+      SELECT id, name, email, phone, insurance_type, assigned_to 
+      FROM customers
+      WHERE assigned_to IS NOT NULL
+  `;
 
-    Promise.all(promises)
-        .then((results) => {
-            const allFlaggedClients = [].concat(...results); // Combine all results into one array
-            res.status(200).json(allFlaggedClients);
-        })
-        .catch((err) => {
-            console.error('Error fetching flagged clients:', err);
-            res.status(500).json({ error: 'Database error' });
-        });
+  db.query(query, (err, results) => {
+      if (err) {
+          console.error('Error fetching flagged clients:', err);
+          return res.status(500).json({ error: 'Database error' });
+      }
+      res.status(200).json(results);
+  });
 });
 
 

@@ -304,25 +304,23 @@ app.post('/submit-business', (req, res) => {
 
 
 // updated deletion logic, no longer from req body
+// DELETE Client API
 app.delete('/admin/delete-client', verifyToken, (req, res) => {
-  const { clientId, tableName } = req.query; // Use req.query instead of req.body
+  const { uniqueId } = req.body;
 
-  if (!clientId || !tableName) {
-    return res.status(400).json({ error: 'Missing required fields' });
+  if (!uniqueId) {
+    return res.status(400).json({ error: 'Missing required unique ID' });
   }
 
-  const query = `DELETE FROM ${tableName} WHERE id = ?`;
+  const deleteCustomerQuery = `
+    DELETE FROM customers WHERE id = ?;
+  `;
 
-  db.query(query, [clientId], (err, result) => {
+  db.query(deleteCustomerQuery, [uniqueId], (err, result) => {
     if (err) {
       console.error('Error deleting client:', err);
-      return res.status(500).json({ error: 'Database error' });
+      return res.status(500).json({ error: 'Database error while deleting client' });
     }
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'Client not found' });
-    }
-
     res.status(200).json({ message: 'Client successfully deleted' });
   });
 });

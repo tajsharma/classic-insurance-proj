@@ -345,7 +345,7 @@ app.get('/admin/auto-data', verifyToken, (req, res) => {
       auto_insurance.license_number, 
       auto_insurance.insurance_company, 
       auto_insurance.coverage, 
-      auto_insurance.assigned_to
+      customers.assigned_to
     FROM 
       auto_insurance
     JOIN 
@@ -373,7 +373,7 @@ app.get('/admin/home-data', verifyToken, (req, res) => {
       home_insurance.home_type,
       home_insurance.property_value,
       home_insurance.coverage_amount,
-      home_insurance.assigned_to
+      customers.assigned_to
     FROM 
       home_insurance
     JOIN 
@@ -400,7 +400,7 @@ app.get('/admin/business-data', verifyToken, (req, res) => {
       business_insurance.business_name,
       business_insurance.business_type,
       business_insurance.coverage_amount,
-      business_insurance.assigned_to
+      customers.assigned_to
     FROM 
       business_insurance
     JOIN 
@@ -427,7 +427,7 @@ app.get('/admin/life-data', verifyToken, (req, res) => {
       life_insurance.type_of_coverage AS coverage_type,
       life_insurance.coverage_amount,
       life_insurance.beneficiary_name AS beneficiary,
-      life_insurance.assigned_to
+      customers.assigned_to
     FROM 
       life_insurance
     JOIN 

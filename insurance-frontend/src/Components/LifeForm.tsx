@@ -22,17 +22,27 @@ const LifeForm: React.FC = () =>{
     
       try {
         const response = await axios.post('http://localhost:5000/submit-life', formData);
-        
+    
         if (response.status === 200) {
           alert('Form submitted successfully!');
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            coverageType: '',
+            coverageAmount: '',
+            beneficiary: '',
+          });
         } else {
           alert('Failed to submit the form');
         }
         console.log(response.data);
       } catch (error) {
         console.error('Error submitting the form:', error);
+        alert('An error occurred while submitting the form.');
       }
     };
+    
   
     return (
       <div

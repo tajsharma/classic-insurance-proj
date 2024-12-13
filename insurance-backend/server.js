@@ -500,6 +500,68 @@ app.get('/admin/flagged-clients', verifyToken, (req, res) => {
 });
 
 
+app.post('/quotes', verifyToken, (req, res) => {
+  const {
+      customerId,
+      insuranceType,
+      monthlyPremium,
+      annualPremium,
+      deductible,
+      liabilityCoverageLimits,
+      compAndCollisionCoverageLimits,
+      optionalCoverageCosts,
+      feesAndTaxes,
+  } = req.body;
+
+  if (!customerId || !insuranceType) {
+      return res.status(400).json({ error: 'Customer ID and insurance type are required' });
+  }
+
+  const query = `
+      INSERT INTO quotes (
+          customer_id, insurance_type, monthly_premium, annual_premium, deductible, 
+          liability_coverage_limits, comp_and_collision_coverage_limits, optional_coverage_costs, fees_and_taxes
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+  db.query(
+      query,
+      [
+          customerId,
+          insuranceType,
+          monthlyPremium,
+          annualPremium,
+          deductible,
+          liabilityCoverageLimits,
+          compAndCollisionCoverageLimits,
+          optionalCoverageCosts,
+          feesAndTaxes,
+      ],
+      (err, result) => {
+          if (err) {
+              console.error('Error adding quote:', err);
+              return res.status(500).json({ error: 'Database error' });
+          }
+          res.status(201).json({ message: 'Quote added successfully' });
+      }
+  );
+});
+
+
+app.get('/quotes/:customerId', verifyToken, (req, res) => {
+  const { customerId } = req.params;
+
+  const query = 'SELECT * FROM quotes WHERE customer_id = ?';
+  db.query(query, [customerId], (err, results) => {
+      if (err) {
+          console.error('Error fetching quotes:', err);
+          return res.status(500).json({ error: 'Database error' });
+      }
+      res.status(200).json(results);
+  });
+});
+
+
+
 
   
 //start the server

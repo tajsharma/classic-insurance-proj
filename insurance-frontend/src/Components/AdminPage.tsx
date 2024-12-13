@@ -12,12 +12,13 @@ const AdminPage: React.FC = () => {
   
     // Updated headerMappings for all endpoints
     const headerMappings: { [key: string]: string[] } = {
-        '/admin/auto-data': ['ID', 'Name', 'Email', 'Phone', 'Vehicle Make', 'Vehicle Model', 'VIN', 'License Number', 'Insurance Company', 'Coverage'],
-        '/admin/home-data': ['ID', 'Name', 'Email', 'Phone', 'Property Address', 'Home Type', 'Home Value', 'Coverage Amount'],
-        '/admin/business-data': ['ID', 'Name', 'Email', 'Phone', 'Business Name', 'Business Type', 'Coverage Amount'],
-        '/admin/life-data': ['ID', 'Name', 'Email', 'Phone', 'Coverage Type', 'Coverage Amount', 'Beneficiary'],
-        '/admin/flagged-clients': ['ID', 'Name', 'Email', 'Phone', 'Insurance Type'], // Headers updated for flagged clients
+      '/admin/auto-data': ['Unique ID', 'Name', 'Email', 'Phone', 'Vehicle Make', 'Vehicle Model', 'VIN', 'License Number', 'Insurance Company', 'Coverage', 'Assigned To'],
+      '/admin/home-data': ['Unique ID', 'Name', 'Email', 'Phone', 'Property Address', 'Home Type', 'Property Value', 'Coverage Amount', 'Assigned To'],
+      '/admin/business-data': ['Unique ID', 'Name', 'Email', 'Phone', 'Business Name', 'Business Type', 'Coverage Amount', 'Assigned To'],
+      '/admin/life-data': ['Unique ID', 'Name', 'Email', 'Phone', 'Coverage Type', 'Coverage Amount', 'Beneficiary', 'Assigned To'],
+      '/admin/flagged-clients': ['ID', 'Name', 'Email', 'Phone', 'Insurance Type', 'Assigned To'], // Headers updated for flagged clients
     };
+    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -77,64 +78,45 @@ const AdminPage: React.FC = () => {
   
   
     
-  const handleFlagClient = async (id: number, isFlagged: boolean) => {
-    try {
-        const token = localStorage.getItem('authToken');
-        const actionEndpoint = isFlagged ? '/unassign-client' : '/assign-client'; // Decide action
-
-        const tableMappings: { [key: string]: string } = {
-            '/admin/auto-data': 'auto_insurance',
-            '/admin/home-data': 'home_insurance',
-            '/admin/business-data': 'business_insurance',
-            '/admin/life-data': 'life_insurance',
-        };
-
-        const tableName = tableMappings[endpoint]; // Use the current `endpoint` to get the table name
-        if (!tableName) {
-            alert('Invalid table mapping. Cannot flag/unflag client.');
-            return;
-        }
-
-        const payload = {
-            clientId: id,
-            tableName,
-            employeeName: 'currentEmployee', // Replace with logged-in employee's name
-        };
-
-        const response = await axios.post(`http://localhost:5000${actionEndpoint}`, payload, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        console.log(response.data); // Debugging
-        alert(response.data.message); // Notify success
-
-        // Update flagged clients for the current table
-        setFlaggedClients((prev) => {
-            const updatedClients = isFlagged
-                ? (prev[endpoint] || []).filter((clientId) => clientId !== id) // Remove client from flagged list
-                : [...(prev[endpoint] || []), id]; // Add client to flagged list
-
-            return { ...prev, [endpoint]: updatedClients }; // Update specific endpoint
-        });
-
-        // Update the assigned_to field dynamically in the data
-        const updatedData = data.map((client) => {
-            if (client.id === id) {
-                return {
-                    ...client,
-                    assigned_to: isFlagged ? null : response.data.employeeName, // Update dynamically
-                };
-            }
-            return client;
-        });
-        setData(updatedData);
-    } catch (error) {
-        console.error('Error updating client:', error);
-        alert('An error occurred while updating the client');
-    }
-}; 
+    const handleFlagClient = async (id: number, isFlagged: boolean) => {
+      try {
+          const token = localStorage.getItem('authToken');
+          const actionEndpoint = isFlagged ? '/unassign-client' : '/assign-client';
+  
+          const payload = { clientId: id };
+          const response = await axios.post(`http://localhost:5000${actionEndpoint}`, payload, {
+              headers: { Authorization: `Bearer ${token}` },
+          });
+  
+          // Notify the user
+          alert(response.data.message);
+  
+          // Update UI: Refresh the `assigned_to` field dynamically
+          const updatedData = data.map((client) => {
+              if (client.id === id) {
+                  return {
+                      ...client,
+                      assigned_to: isFlagged ? null : response.data.employeeName,
+                  };
+              }
+              return client;
+          });
+          setData(updatedData);
+  
+          // Update flagged clients state
+          setFlaggedClients((prev) => {
+              const updatedClients = isFlagged
+                  ? prev[endpoint]?.filter((clientId) => clientId !== id)
+                  : [...(prev[endpoint] || []), id];
+              return { ...prev, [endpoint]: updatedClients };
+          });
+      } catch (error) {
+          console.error('Error updating client:', error);
+          alert('An error occurred while flagging/unflagging the client');
+      }
+  };
+  
+  
 
 
     // Show contact info in a modal or pop-up
@@ -211,42 +193,42 @@ const AdminPage: React.FC = () => {
                   <th className="px-4 py-2 rounded-lg bg">Actions</th>
                 </tr>
               </thead>
-              <tbody>
-                {data.map((item: any) => (
-                  <tr key={item.id}>
-                    {headers.map((header, colIndex) => (
-                      <td key={colIndex} className="border border-gray-300 bg-white px-4 py-2 rounded-lg">
-                        {item[Object.keys(item)[colIndex]] || 'N/A'}
+                <tbody>
+                  {data.map((item: any) => (
+                    <tr key={item.unique_id}> {/* Use unique_id as the key */}
+                      {headers.map((header, colIndex) => (
+                        <td key={colIndex} className="border border-gray-300 bg-white px-4 py-2 rounded-lg">
+                          {item[Object.keys(item)[colIndex]] || 'N/A'}
+                        </td>
+                      ))}
+                      <td className="border border-gray-300 bg-white px-4 py-2 rounded-lg">
+                        {item.assigned_to || 'Unassigned'}
                       </td>
-                    ))}
-                    <td className="border border-gray-300 bg-white px-4 py-2 rounded-lg">
-                      {item.assigned_to || 'Unassigned'}
-                    </td>
-                    <td className="border border-gray-300 bg-transparent justify-between px-4 py-2 rounded-lg flex gap-2">
-                      <button
-                        onClick={() => handleFlagClient(item.id, flaggedClients[endpoint]?.includes(item.id))}
-                        className={`text-white text-sm px-3 py-1 rounded-lg ${
-                          flaggedClients[endpoint]?.includes(item.id) ? 'bg-red-500' : 'bg-blue-500'
-                        }`}
-                      >
-                        {flaggedClients[endpoint]?.includes(item.id) ? 'Unflag' : 'Flag'}
-                      </button>
-                      <button
-                        onClick={() => handleContactClick(item.name, item.email, item.phone)}
-                        className="bg-green-500 text-white text-sm px-3 py-1 rounded-lg hover:bg-green-600"
-                      >
-                        Contact
-                      </button>
-                      <button
-                        onClick={() => handleDeleteClick(item.id)}
-                        className="bg-red-500 text-white text-sm px-3 py-1 rounded-lg hover:bg-green-600"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+                      <td className="border border-gray-300 bg-transparent justify-between px-4 py-2 rounded-lg flex gap-2">
+                        <button
+                          onClick={() => handleFlagClient(item.unique_id, flaggedClients[endpoint]?.includes(item.unique_id))}
+                          className={`text-white text-sm px-3 py-1 rounded-lg ${
+                            flaggedClients[endpoint]?.includes(item.unique_id) ? 'bg-red-500' : 'bg-blue-500'
+                          }`}
+                        >
+                          {flaggedClients[endpoint]?.includes(item.unique_id) ? 'Unflag' : 'Flag'}
+                        </button>
+                        <button
+                          onClick={() => handleContactClick(item.name, item.email, item.phone)}
+                          className="bg-green-500 text-white text-sm px-3 py-1 rounded-lg hover:bg-green-600"
+                        >
+                          Contact
+                        </button>
+                        <button
+                          onClick={() => handleDeleteClick(item.unique_id)}
+                          className="bg-red-500 text-white text-sm px-3 py-1 rounded-lg hover:bg-green-600"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
             </table>
           </div>
           <div className="py-10"></div> {/* Add padding at the bottom */}

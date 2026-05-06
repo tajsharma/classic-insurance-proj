@@ -4,11 +4,21 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const {
+  sanitizeBody,
+  validateAuto,
+  validateHome,
+  validateLife,
+  validateBusiness,
+  validateQuote,
+  validateLogin,
+} = require('./middleware/validation');
 
 //intialize express
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(sanitizeBody);
 
 //connect to my sql 
 const db = mysql.createConnection({
@@ -36,7 +46,7 @@ app.use(cors({
 
 //login endpoint
 
-app.post('/login', (req, res) => {
+app.post('/login', validateLogin, (req, res) => {
     const { username, password } = req.body;
   
     const query = 'SELECT * FROM employees WHERE username = ?';
@@ -105,7 +115,7 @@ const verifyToken = (req, res, next) => {
 //LOGIN CODE ENDS HERE --------------------------------------------------------------------------------------
 
 //submit auto form into sql logic
-app.post('/submit-auto', (req, res) => {
+app.post('/submit-auto', validateAuto, (req, res) => {
   const {
     name,
     email,
@@ -146,7 +156,7 @@ app.post('/submit-auto', (req, res) => {
 
 
 //submit home form into sql logic
-app.post('/submit-home', (req, res) => {
+app.post('/submit-home', validateHome, (req, res) => {
   const {
     name,
     email,
@@ -200,7 +210,7 @@ app.post('/submit-home', (req, res) => {
 
 
 // Submit life form into SQL logic
-app.post('/submit-life', (req, res) => {
+app.post('/submit-life', validateLife, (req, res) => {
   const {
     name,
     email,
@@ -252,7 +262,7 @@ app.post('/submit-life', (req, res) => {
 
 
 //submit business form into sql logic
-app.post('/submit-business', (req, res) => {
+app.post('/submit-business', validateBusiness, (req, res) => {
   const {
     name,
     email,
@@ -500,7 +510,7 @@ app.get('/admin/flagged-clients', verifyToken, (req, res) => {
 });
 
 
-app.post('/quotes', verifyToken, (req, res) => {
+app.post('/quotes', verifyToken, validateQuote, (req, res) => {
   const {
       customerId,
       insuranceType,

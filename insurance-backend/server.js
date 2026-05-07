@@ -4,6 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const {
   sanitizeBody,
   validateAuto,
@@ -22,10 +23,10 @@ app.use(sanitizeBody);
 
 //connect to my sql 
 const db = mysql.createConnection({
-    host:'localhost',
-    user:'root',
-    password:'Sniper505!',
-    database:'insurance_data_dummy',
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASS || '',
+    database: process.env.DB_NAME || 'insurance_data_dummy',
 });
 
 //check the connection
@@ -69,7 +70,11 @@ app.post('/login', validateLogin, (req, res) => {
       }
   
       // Generate JWT
-      const token = jwt.sign({ id: employee.id, username: employee.username }, 'secret_key', { expiresIn: '1h' });
+      const token = jwt.sign(
+        { id: employee.id, username: employee.username },
+        process.env.JWT_SECRET || 'secret_key',
+        { expiresIn: '1h' }
+      );
       res.status(200).json({ token });
     });
   });
@@ -105,7 +110,7 @@ const verifyToken = (req, res, next) => {
     }
   
     try {
-      const decoded = jwt.verify(token, 'secret_key'); // Verify token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret_key'); // Verify token
       req.user = decoded; // Attach user info to the request object
       next();
     } catch (err) {

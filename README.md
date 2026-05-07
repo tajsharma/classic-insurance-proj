@@ -89,7 +89,7 @@ npm install
 npm start
 ```
 
-The app runs at `http://localhost:3000` with the API on port `5000`.
+The app runs at `http://localhost:3000` with the API on port `5001`.
 
 ### Python Scripts
 ```bash

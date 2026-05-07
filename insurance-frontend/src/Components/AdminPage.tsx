@@ -25,7 +25,7 @@ const AdminPage: React.FC = () => {
             if (endpoint) {
                 try {
                     const token = localStorage.getItem('authToken');
-                    const response = await axios.get(`http://localhost:5000${endpoint}`, {
+                    const response = await axios.get(`http://localhost:5001${endpoint}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -54,7 +54,7 @@ const AdminPage: React.FC = () => {
     const sendQuote = async (quoteDetails: any) => {
       try {
           const token = localStorage.getItem("authToken");
-          const response = await axios.post("http://localhost:5000/quotes", quoteDetails, {
+          const response = await axios.post("http://localhost:5001/quotes", quoteDetails, {
               headers: { Authorization: `Bearer ${token}` },
           });
           alert("Quote sent successfully!");
@@ -70,7 +70,7 @@ const AdminPage: React.FC = () => {
         try {
           const token = localStorage.getItem('authToken');
           const response = await axios.delete(
-            `http://localhost:5000/admin/delete-client`,
+            `http://localhost:5001/admin/delete-client`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -102,7 +102,7 @@ const AdminPage: React.FC = () => {
         const actionEndpoint = isFlagged ? '/unassign-client' : '/assign-client';
     
         const payload = { clientId: uniqueId };
-        const response = await axios.post(`http://localhost:5000${actionEndpoint}`, payload, {
+        const response = await axios.post(`http://localhost:5001${actionEndpoint}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
     

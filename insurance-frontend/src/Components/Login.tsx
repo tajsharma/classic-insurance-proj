@@ -15,7 +15,7 @@ const Login: React.FC = () =>{
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-          const response = await axios.post('http://localhost:5000/login', formData);
+          const response = await axios.post('http://localhost:5001/login', formData);
           if (response.status === 200) {
             localStorage.setItem('authToken', response.data.token); // Save token
             navigate('/admin'); // Redirect to admin page

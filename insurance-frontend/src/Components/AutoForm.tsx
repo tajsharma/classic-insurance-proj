@@ -40,7 +40,7 @@ const AutoForm: React.FC = () =>{
       }
     
       try {
-        const response = await axios.post('http://localhost:5000/submit-auto', formData);
+        const response = await axios.post('http://localhost:5001/submit-auto', formData);
     
         if (response.status === 200) {
           alert('Form submitted successfully!');

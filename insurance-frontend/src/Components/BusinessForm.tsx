@@ -37,7 +37,7 @@ const BusinessForm: React.FC = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/submit-business', formData);
+      const response = await axios.post('http://localhost:5001/submit-business', formData);
 
       if (response.status === 200) {
         alert('Form submitted successfully!');
